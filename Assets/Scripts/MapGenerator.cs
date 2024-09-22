@@ -431,6 +431,7 @@ public class CellularLevelGenerator : MonoBehaviour
  
         RemoveSecludedCells();
         RecoverEdgeCells();
+		generateColliders();
     }
  
     void GenerateMap()
@@ -666,9 +667,27 @@ CurvePoint GetCurvePoint(int x, int y)
     return cell;
  }
 
+ 	public GameObject wallPrefab;
+
+
+	//Generates cubes as walls so that there is a mesh
+	void generateColliders() {
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (generatedMap[x,y] == 0) {
+					GameObject wall = Instantiate(wallPrefab, new Vector2(x,y), Quaternion.identity);
+					wall.AddComponent<BoxCollider2D>();
+				}
+			}
+		}
+	}
+
+public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, drawSeg;
+
+
     void OnDrawGizmos()
     {
-        if (generatedMap != null)
+        if (generatedMap != null && drawMap)
         {
             for (int x = 0; x < width; x++)
             {
@@ -680,7 +699,7 @@ CurvePoint GetCurvePoint(int x, int y)
                 }
             }
         }
-		if (hilbertPointsInt != null)
+		if (hilbertPointsInt != null && drawHilbert)
     {
 			for (int x = 0; x < width; x++)
 			{
@@ -692,7 +711,7 @@ CurvePoint GetCurvePoint(int x, int y)
 				}
 			}
     	}
-		if (hilbertNegativePointsInt != null){
+		if (hilbertNegativePointsInt != null && drawHilbertNeg){
 			for (int x = 0; x < width; x++)	{
 				for (int y = 0; y < height; y++)
 				{
@@ -705,7 +724,7 @@ CurvePoint GetCurvePoint(int x, int y)
 
 
 
-		if (hilbertPoints != null){
+		if (hilbertPoints != null && drawhilPoint){
 			for (int i = 0; i < hilbertPoints.Length - 1; i++)
 			{
 				if (hilbertPoints[i].Equals(Vector2.zero) ||
@@ -717,7 +736,7 @@ CurvePoint GetCurvePoint(int x, int y)
 								new Vector2(hilbertPoints[i + 1].x + .5f, hilbertPoints[i + 1].y + .5f));
 			}
     	}
-		if (curvePoints != null){
+		if (curvePoints != null && drawCurvepoint){
 			for (int i = 0; i < curvePoints.Count; i++)
 			{
 				CurvePoint cPoint = (CurvePoint)curvePoints[i];
@@ -728,7 +747,7 @@ CurvePoint GetCurvePoint(int x, int y)
 			}
 		}
 		// display segments
-		if (segments != null)
+		if (segments != null && drawSeg)
 		{
 			foreach (KeyValuePair<Vector2, ArrayList> segment in segments)
 			{
