@@ -48,6 +48,7 @@ public class CellularLevelGenerator : MonoBehaviour
 	Dictionary<Vector2, ArrayList> segments;
 	
 	
+	
 	void CreateCriticalPath() {
 		if (segments != null && segments.Count > 1) {
 			Dictionary<string, List<KeyValuePair<Vector2Int, Vector2Int>>> list = new Dictionary<string, List<KeyValuePair<Vector2Int, Vector2Int>>>();
@@ -114,6 +115,7 @@ public class CellularLevelGenerator : MonoBehaviour
 		}
 	}
 
+	//Checks if two points are on the same y or x level and returns True or False
 	bool AreCellsLeveled(Vector2 pointA, Vector2 pointB) {
 		if (pointA.x == pointB.x || pointA.y == pointB.y) {
 			return true;
@@ -122,6 +124,8 @@ public class CellularLevelGenerator : MonoBehaviour
 		}
 	}
 
+
+//Finds if two seperate segments can be connected and returns a list of of how/where this connection can occur
 	List<KeyValuePair<Vector2Int, Vector2Int>> FindConnectorsBetweenSegments(
 		ArrayList cellsA, ArrayList cellsB, List<KeyValuePair<Vector2Int, Vector2Int>> segmentConnectors) {
 			for (int i = 0; i < cellsA.Count; i++) {
@@ -193,7 +197,7 @@ public class CellularLevelGenerator : MonoBehaviour
 	}
 
 
-
+	//Fills neighboring cells of a cell with corresponding val
 	void FloodFillNeighboursWithValue(int x, int y, int val) {
 		for (int i = -pathGirth; i <= pathGirth; i++) {
 			for (int j = -pathGirth; j <= pathGirth; j++) {
@@ -209,6 +213,8 @@ public class CellularLevelGenerator : MonoBehaviour
 		}
 	}
 
+//Effectively the main function, creates random shift values for x and y to ensure that the maps are different every time
+// also creates the basic form of the map before relying on other functions
 	void GenerateGuidelines() {
 		hilbertPoints = new Vector2[(int)Mathf.Pow(4, hilbertReps)];
 		hilbertPointsInt = new int[Mathf.Max(width, height), Mathf.Max(width, height)];
@@ -249,6 +255,8 @@ public class CellularLevelGenerator : MonoBehaviour
 
 	[SerializeField]
 	int shiftX, shiftY;
+	
+	//Hilbert Curve for pathway shapes, scale and repitition of curve can be adjusted in UI
 	void HilbertCurve(float x, float y, float xi, float xj, float yi, float yj, int n)
 	{
 	
@@ -276,6 +284,8 @@ public class CellularLevelGenerator : MonoBehaviour
 		CellularAutomata();
     }
 
+	
+	//Creates path segments
 	void CreateSegments(){
 		// create path's segments
 		segments.Clear();
@@ -402,6 +412,8 @@ public class CellularLevelGenerator : MonoBehaviour
 		Debug.Log("Segments: " + segments.Count);
 	}
  
+
+
     void CellularAutomata()
     {
         if (useRandomSeed) {
