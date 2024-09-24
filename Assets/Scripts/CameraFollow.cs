@@ -19,17 +19,11 @@ public class CameraFollow : MonoBehaviour
     {
         if (player != null)
         {
-            // Desired position: offset from the player's position (top-down view)
             Vector3 desiredPosition = player.position + offset;
 
-            // Smoothly move the camera towards the desired position
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-
-            // Update the camera position
             transform.position = smoothedPosition;
-
-            // Rotate the camera for a top-down view with a slight tilt
-            transform.rotation = Quaternion.Euler(45f, 0f, 0f); // 45-degree tilt for top-down view
+            transform.rotation = Quaternion.Euler(45f, 0f, 0f);
         }
     }
 }

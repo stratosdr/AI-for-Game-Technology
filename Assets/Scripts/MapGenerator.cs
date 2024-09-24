@@ -291,27 +291,19 @@ public class CellularLevelGenerator : MonoBehaviour
 	// Function to generate the floor below the map
     void CreateFloor()
 	{
-    // If you have a floor prefab, instantiate it here, otherwise, create a simple plane
+
     GameObject floor = Instantiate(floorPrefab);
+    floor.transform.localScale = new Vector3(width / 10f, 1, height / 10f);
+    floor.transform.position = new Vector3(width / 2f, -0.5f, height / 2f);
 
-    // Adjust the size of the plane based on the map dimensions
-    floor.transform.localScale = new Vector3(width / 10f, 1, height / 10f);  // Adjust scale to match map size
-
-    // Position the plane slightly below the map (on the x-z plane)
-    floor.transform.position = new Vector3(width / 2f, -0.5f, height / 2f);  // Position the plane under the map
-
-    // Add or modify the BoxCollider to ensure it's slightly above or at the surface
     BoxCollider floorCollider = floor.GetComponent<BoxCollider>();
     if (floorCollider == null)
     {
-        // Add BoxCollider if it doesn't already exist
         floorCollider = floor.AddComponent<BoxCollider>();
     }
 
-    // Adjust the BoxCollider's center and size so that it's at or slightly above the surface of the floor
-    floorCollider.center = new Vector3(0, 0.5f, 0);  // Centered slightly above the surface
-    floorCollider.size = new Vector3(floor.transform.localScale.x * 10, 0.1f, floor.transform.localScale.z * 10);  // Flat collider
-	}
+    floorCollider.center = new Vector3(0, 0.5f, 0);
+    floorCollider.size = new Vector3(floor.transform.localScale.x * 10, 0.1f, floor.transform.localScale.z * 10);
 
 
 	//Creates path segments
@@ -466,16 +458,13 @@ public class CellularLevelGenerator : MonoBehaviour
 
 		// Spawn player at a random non-wall location
 		Vector2Int playerPosition = GetRandomNonWallPosition();
-		Vector3 spawnPosition = new Vector3(playerPosition.x, 0.3f, playerPosition.y); // Adjust Y to be above the ground
+		Vector3 spawnPosition = new Vector3(playerPosition.x, 0.3f, playerPosition.y);
 
-		// Instantiate the player (capsule)
 		GameObject player = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
-
-		// Find the camera and assign the player to follow
 		CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
 		if (cameraFollow != null)
 		{
-			cameraFollow.SetPlayer(player.transform);  // Assign the instantiated player to the camera follow script
+			cameraFollow.SetPlayer(player.transform);
 		}
 	}
 
@@ -722,12 +711,9 @@ CurvePoint GetCurvePoint(int x, int y)
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				if (generatedMap[x,y] == 0) {
-					GameObject wall = Instantiate(wallPrefab, new Vector3(x, 0, y), Quaternion.identity); // Adjust position to X-Z plane
+					GameObject wall = Instantiate(wallPrefab, new Vector3(x, 0, y), Quaternion.identity);
 
-					// Set the parent of the instantiated wall to be MapGenerator (this script's GameObject)
                 	wall.transform.SetParent(this.transform);
-
-                	// Instead of BoxCollider2D, use BoxCollider for 3D physics
 					if (wall.GetComponent<BoxCollider>() == null) {
 						wall.AddComponent<BoxCollider>();
 					}
@@ -740,7 +726,6 @@ Vector2Int GetRandomNonWallPosition()
 {
     List<Vector2Int> nonWallPositions = new List<Vector2Int>();
 
-    // Loop through the map and collect all non-wall (walkable) positions
     for (int x = 1; x < width - 1; x++)
     {
         for (int y = 1; y < height - 1; y++)
@@ -751,8 +736,6 @@ Vector2Int GetRandomNonWallPosition()
             }
         }
     }
-
-    // Pick a random position from the list of non-wall positions
     int randomIndex = pseudoRandom.Next(0, nonWallPositions.Count);
     return nonWallPositions[randomIndex];
 }
