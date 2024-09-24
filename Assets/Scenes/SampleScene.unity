@@ -255,6 +255,13 @@ MonoBehaviour:
   negativePathGirth: 8
   shiftX: 0
   shiftY: 0
+  wallPrefab: {fileID: 72277224218690952, guid: dccc58aa9bac4654c9088573f036cb02, type: 3}
+  drawMap: 0
+  drawHilbert: 0
+  drawHilbertNeg: 0
+  drawhilPoint: 0
+  drawCurvepoint: 0
+  drawSeg: 0
 --- !u!4 &1636527876
 Transform:
   m_ObjectHideFlags: 0
