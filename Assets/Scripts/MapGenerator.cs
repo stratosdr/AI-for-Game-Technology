@@ -9,35 +9,37 @@ public enum CurveCellType {TR, TL, BL, BR, N, EL, ET, ER, EB, H, V}
 
 public class CellularLevelGenerator : MonoBehaviour
 {
-    
+
 	ArrayList curvePoints;
 	struct CurvePoint {
 		public int x;
 		public int y;
 		public CurveCellType type;
 	}
-	
+
 	int[,] generatedMap;
-  
+
     public int width;
     public int height;
- 
+
+	public GameObject floorPrefab;
+	public GameObject playerPrefab;
     public string seed;
     private System.Random pseudoRandom;
 
 	public bool useRandomSeed;
- 
+
     [Range(0,100)]
     public int fillingPercentage;
 
- 
+
 // Hilbert's curve parameters
 	Vector2[]  hilbertPoints;
 	public int hilbertReps;
 	public int hilbertScale;
 	int        hilbertIdx = 0;
-	
-	
+
+
 	int[,] hilbertPointsInt;
 
 	public int pathGirth;
@@ -46,9 +48,9 @@ public class CellularLevelGenerator : MonoBehaviour
 	public int negativePathGirth;
 
 	Dictionary<Vector2, ArrayList> segments;
-	
-	
-	
+
+
+
 	void CreateCriticalPath() {
 		if (segments != null && segments.Count > 1) {
 			Dictionary<string, List<KeyValuePair<Vector2Int, Vector2Int>>> list = new Dictionary<string, List<KeyValuePair<Vector2Int, Vector2Int>>>();
@@ -86,9 +88,9 @@ public class CellularLevelGenerator : MonoBehaviour
 		int y_next = (int)pointTo.y;
 		int x_dist = (int)Mathf.Abs(x_curr - x_next);
 		int y_dist = (int)Mathf.Abs(y_curr - y_next);
-	
+
 		Vector2 dir = ((Vector2)pointTo - (Vector2)pointFrom).normalized;
-	
+
 		if (x_dist == 0 && y_dist > 0)
 		{
 			for (int y = 0; y < y_dist; y++)
@@ -149,8 +151,8 @@ public class CellularLevelGenerator : MonoBehaviour
 			}
 			return segmentConnectors;
 		}
-	
-	
+
+
 	void CreateCurveCorners() {
 		curvePoints.Clear();
 		for (int x = 1; x < width - 1; x++) {
@@ -246,7 +248,7 @@ public class CellularLevelGenerator : MonoBehaviour
 
 		}
 
-		
+
 		CreateCurveCorners();
         CreateSegments();
 		CreateCriticalPath();
@@ -255,11 +257,11 @@ public class CellularLevelGenerator : MonoBehaviour
 
 	[SerializeField]
 	int shiftX, shiftY;
-	
+
 	//Hilbert Curve for pathway shapes, scale and repitition of curve can be adjusted in UI
 	void HilbertCurve(float x, float y, float xi, float xj, float yi, float yj, int n)
 	{
-	
+
 		if (n <= 0)
 		{
 			float X = x + (xi + yi) / 2;
@@ -278,40 +280,67 @@ public class CellularLevelGenerator : MonoBehaviour
 
 
     void Start()
-    {	
+    {
 		segments = new Dictionary<Vector2, ArrayList>();
         curvePoints = new ArrayList();
 		CellularAutomata();
+		CreateFloor();
     }
 
-	
+
+	// Function to generate the floor below the map
+    void CreateFloor()
+	{
+    // If you have a floor prefab, instantiate it here, otherwise, create a simple plane
+    GameObject floor = Instantiate(floorPrefab);
+
+    // Adjust the size of the plane based on the map dimensions
+    floor.transform.localScale = new Vector3(width / 10f, 1, height / 10f);  // Adjust scale to match map size
+
+    // Position the plane slightly below the map (on the x-z plane)
+    floor.transform.position = new Vector3(width / 2f, -0.5f, height / 2f);  // Position the plane under the map
+
+    // Add or modify the BoxCollider to ensure it's slightly above or at the surface
+    BoxCollider floorCollider = floor.GetComponent<BoxCollider>();
+    if (floorCollider == null)
+    {
+        // Add BoxCollider if it doesn't already exist
+        floorCollider = floor.AddComponent<BoxCollider>();
+    }
+
+    // Adjust the BoxCollider's center and size so that it's at or slightly above the surface of the floor
+    floorCollider.center = new Vector3(0, 0.5f, 0);  // Centered slightly above the surface
+    floorCollider.size = new Vector3(floor.transform.localScale.x * 10, 0.1f, floor.transform.localScale.z * 10);  // Flat collider
+	}
+
+
 	//Creates path segments
 	void CreateSegments(){
 		// create path's segments
 		segments.Clear();
 		ArrayList endEdgePoints = new ArrayList();              // to contain ending edge point so that we can skip them
-	
+
 		for (int i = 0; i < curvePoints.Count; i++)
 		{
 			CurvePoint cPoint = (CurvePoint)curvePoints[i];
 			Vector2Int ePoint = new Vector2Int(cPoint.x, cPoint.y);
-	
+
 			if (endEdgePoints.Contains(ePoint))
 				continue;
-	
+
 			if (cPoint.type.Equals(CurveCellType.EL) ||
 				cPoint.type.Equals(CurveCellType.EB))
 			{
 				ArrayList segmentPoints = new ArrayList();
 				Vector2Int point = ePoint;
-	
+
 				while (!segments.ContainsKey(ePoint))
 				{
 					Vector2Int right = new Vector2Int(point.x + 1, point.y);
 					Vector2Int left = new Vector2Int(point.x - 1, point.y);
 					Vector2Int top = new Vector2Int(point.x, point.y + 1);
 					Vector2Int bottom = new Vector2Int(point.x, point.y - 1);
-	
+
 					// go right!
 					if (hilbertPointsInt[right.x, right.y] == 1 &&
 						!segmentPoints.Contains(right))
@@ -320,7 +349,7 @@ public class CellularLevelGenerator : MonoBehaviour
 						segmentPoints.Add(point);
 					}
 					// go up!
-					else if (hilbertPointsInt[top.x, top.y] == 1 && 
+					else if (hilbertPointsInt[top.x, top.y] == 1 &&
 							!segmentPoints.Contains(top))
 					{
 						point = top;
@@ -340,9 +369,9 @@ public class CellularLevelGenerator : MonoBehaviour
 						point = bottom;
 						segmentPoints.Add(point);
 					}
-	
+
 					CurvePoint curvePoint = GetCurvePoint(point.x, point.y);
-	
+
 					if (curvePoint.type.Equals(CurveCellType.EB) ||
 						curvePoint.type.Equals(CurveCellType.EL) ||
 						curvePoint.type.Equals(CurveCellType.ER) ||
@@ -359,14 +388,14 @@ public class CellularLevelGenerator : MonoBehaviour
 			{
 				ArrayList segmentPoints = new ArrayList();
 				Vector2Int point = ePoint;
-	
+
 				while (!segments.ContainsKey(ePoint))
 				{
 					Vector2Int right = new Vector2Int(point.x + 1, point.y);
 					Vector2Int left = new Vector2Int(point.x - 1, point.y);
 					Vector2Int top = new Vector2Int(point.x, point.y + 1);
 					Vector2Int bottom = new Vector2Int(point.x, point.y - 1);
-	
+
 					// go left!
 					if (hilbertPointsInt[left.x, left.y] == 1 &&
 						!segmentPoints.Contains(left))
@@ -381,7 +410,7 @@ public class CellularLevelGenerator : MonoBehaviour
 						point = bottom;
 						segmentPoints.Add(point);
 					}
-	
+
 					// go right!
 					else if (hilbertPointsInt[right.x, right.y] == 1 &&
 							!segmentPoints.Contains(right))
@@ -395,9 +424,9 @@ public class CellularLevelGenerator : MonoBehaviour
 						point = top;
 						segmentPoints.Add(point);
 					}
-	
+
 					CurvePoint curvePoint = GetCurvePoint(point.x, point.y);
-	
+
 					if (curvePoint.type.Equals(CurveCellType.EB) ||
 						curvePoint.type.Equals(CurveCellType.EL) ||
 						curvePoint.type.Equals(CurveCellType.ER) ||
@@ -409,35 +438,53 @@ public class CellularLevelGenerator : MonoBehaviour
 				}
 			}
 		}
-		Debug.Log("Segments: " + segments.Count);
+		//Debug.Log("Segments: " + segments.Count);
 	}
- 
 
 
-    void CellularAutomata()
-    {
-        if (useRandomSeed) {
+
+		void CellularAutomata()
+	{
+		if (useRandomSeed)
+		{
 			seed = System.DateTime.Now.Ticks.ToString();
 		}
-        pseudoRandom = new System.Random(seed.GetHashCode());
+		pseudoRandom = new System.Random(seed.GetHashCode());
 
 		hilbertPoints = new Vector2[(int)Mathf.Pow(4, hilbertReps)];
 		hilbertIdx = 0;
-	
-		GenerateGuidelines();	
-        GenerateMap();
-        for (int i = 0; i < 5; i++)
-            SmoothMap();
- 
-        RemoveSecludedCells();
-        RecoverEdgeCells();
+
+		GenerateGuidelines();
+		GenerateMap();
+
+		for (int i = 0; i < 5; i++)
+			SmoothMap();
+
+		RemoveSecludedCells();
+		RecoverEdgeCells();
 		generateColliders();
-    }
- 
+
+		// Spawn player at a random non-wall location
+		Vector2Int playerPosition = GetRandomNonWallPosition();
+		Vector3 spawnPosition = new Vector3(playerPosition.x, 0.3f, playerPosition.y); // Adjust Y to be above the ground
+
+		// Instantiate the player (capsule)
+		GameObject player = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
+
+		// Find the camera and assign the player to follow
+		CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
+		if (cameraFollow != null)
+		{
+			cameraFollow.SetPlayer(player.transform);  // Assign the instantiated player to the camera follow script
+		}
+	}
+
+
+
     void GenerateMap()
     {
         generatedMap = new int[width, height];
-        
+
         for (int x = 1; x < width - 1; x++)
         {
             for (int y = 1; y < height - 1; y++)
@@ -446,19 +493,19 @@ public class CellularLevelGenerator : MonoBehaviour
             }
         }
     }
- 
+
     int getNeighboursCellCount(int x, int y, int[,] map)
     {
         int neighbors = 0;
         for(int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++)
                 neighbors += map[i + x, j + y];
-             
+
         neighbors -= map[x, y];
- 
+
         return neighbors;
     }
- 
+
     void SmoothMap()
     {
         for (int x = 1; x < width - 1; x++)
@@ -466,13 +513,13 @@ public class CellularLevelGenerator : MonoBehaviour
             for (int y = 1; y < height - 1; y++)
             {
                 int neighbors = getNeighboursCellCount(x, y, generatedMap);
- 
- 
+
+
                 if (neighbors > 4)
                     generatedMap[x, y] = 1;
                 else if (neighbors < 4)
                     generatedMap[x, y] = 0;
-				
+
 				generatedMap[x,y] = (hilbertNegativePointsInt[x,y] == 1) ? 0 : generatedMap[x,y];
 
 				if (hilbertPointsInt[x, y] == 1) {
@@ -482,9 +529,9 @@ public class CellularLevelGenerator : MonoBehaviour
             }
 
 
-        } 
+        }
     }
- 
+
     void RecoverEdgeCells()
     {
         for (int x = 0; x < width; x++)
@@ -496,7 +543,7 @@ public class CellularLevelGenerator : MonoBehaviour
             }
         }
     }
- 
+
     void RemoveSecludedCells()
     {
         for (int x = 1; x < width-1; x++)
@@ -506,22 +553,22 @@ public class CellularLevelGenerator : MonoBehaviour
                 generatedMap[x, y] = (getNeighboursCellCount(x, y, generatedMap) <= 0) ? 0 : generatedMap[x, y];
             }
         }
- 
+
     }
- 
+
 CurvePoint GetCurvePoint(int x, int y)
 {
     int x_left  = x - 1;
     int x_right = x + 1;
- 
+
     int y_bottom = y - 1;
     int y_top    = y + 1;
- 
+
     CurvePoint cell = new CurvePoint();
     cell.x = x;
     cell.y = y;
     cell.type = CurveCellType.N;
- 
+
     if(y_bottom < 0)
     {
         // EB - edge-bottom
@@ -619,7 +666,7 @@ CurvePoint GetCurvePoint(int x, int y)
             hilbertPointsInt[x_right, y]       == 1 &&
             hilbertPointsInt[x, y_top]         == 0 &&
             hilbertPointsInt[x, y_bottom]      == 0)
-        {       
+        {
             cell.type = CurveCellType.H;
         }
         // V - vertical
@@ -663,7 +710,7 @@ CurvePoint GetCurvePoint(int x, int y)
             cell.type = CurveCellType.BR;
         }
     }
- 
+
     return cell;
  }
 
@@ -675,12 +722,41 @@ CurvePoint GetCurvePoint(int x, int y)
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				if (generatedMap[x,y] == 0) {
-					GameObject wall = Instantiate(wallPrefab, new Vector2(x,y), Quaternion.identity);
-					wall.AddComponent<BoxCollider2D>();
+					GameObject wall = Instantiate(wallPrefab, new Vector3(x, 0, y), Quaternion.identity); // Adjust position to X-Z plane
+
+					// Set the parent of the instantiated wall to be MapGenerator (this script's GameObject)
+                	wall.transform.SetParent(this.transform);
+
+                	// Instead of BoxCollider2D, use BoxCollider for 3D physics
+					if (wall.GetComponent<BoxCollider>() == null) {
+						wall.AddComponent<BoxCollider>();
+					}
 				}
 			}
 		}
 	}
+
+Vector2Int GetRandomNonWallPosition()
+{
+    List<Vector2Int> nonWallPositions = new List<Vector2Int>();
+
+    // Loop through the map and collect all non-wall (walkable) positions
+    for (int x = 1; x < width - 1; x++)
+    {
+        for (int y = 1; y < height - 1; y++)
+        {
+            if (generatedMap[x, y] == 1) // 1 indicates a walkable area
+            {
+                nonWallPositions.Add(new Vector2Int(x, y));
+            }
+        }
+    }
+
+    // Pick a random position from the list of non-wall positions
+    int randomIndex = pseudoRandom.Next(0, nonWallPositions.Count);
+    return nonWallPositions[randomIndex];
+}
+
 
 public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, drawSeg;
 
@@ -730,7 +806,7 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
 				if (hilbertPoints[i].Equals(Vector2.zero) ||
 					hilbertPoints[i + 1].Equals(Vector2.zero))
 					continue;
-	
+
 				Gizmos.color = Color.yellow;
 				Gizmos.DrawLine(new Vector2(hilbertPoints[i].x + .5f, hilbertPoints[i].y + .5f),
 								new Vector2(hilbertPoints[i + 1].x + .5f, hilbertPoints[i + 1].y + .5f));
@@ -741,7 +817,7 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
 			{
 				CurvePoint cPoint = (CurvePoint)curvePoints[i];
 				Gizmos.color = (hilbertPointsInt[cPoint.x, cPoint.y] == 1) ? Color.red : Color.clear;
-	
+
 				Vector2 pos = new Vector2(cPoint.x + .5f, cPoint.y + .5f);
 				Gizmos.DrawCube(pos, Vector2.one * 2);
 			}
@@ -757,7 +833,7 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
 					Gizmos.color = Color.yellow;
 					Vector2 pos3 = new Vector2(pos.x + .5f, pos.y + .5f);
 					Gizmos.DrawCube(pos3, Vector3.one * 2);
-	
+
 					if (i == segment.Value.Count - 1)
 					{
 						Vector2 lastPoint = new Vector2(pos.x + .5f, pos.y + .5f);
@@ -765,7 +841,7 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
 						Gizmos.DrawSphere(lastPoint, 2f);
 					}
 				}
-	
+
 				Vector2 posKey = (Vector2)segment.Key;
 				Vector2 posKey3 = new Vector2(posKey.x + .5f, posKey.y + .5f);
 				Gizmos.color = Color.red;
