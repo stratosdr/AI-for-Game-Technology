@@ -304,7 +304,7 @@ public class CellularLevelGenerator : MonoBehaviour
 
     floorCollider.center = new Vector3(0, 0.5f, 0);
     floorCollider.size = new Vector3(floor.transform.localScale.x * 10, 0.1f, floor.transform.localScale.z * 10);
-
+	}
 
 	//Creates path segments
 	void CreateSegments(){
@@ -545,164 +545,162 @@ public class CellularLevelGenerator : MonoBehaviour
 
     }
 
-CurvePoint GetCurvePoint(int x, int y)
-{
-    int x_left  = x - 1;
-    int x_right = x + 1;
+	CurvePoint GetCurvePoint(int x, int y)
+	{
+		int x_left  = x - 1;
+		int x_right = x + 1;
 
-    int y_bottom = y - 1;
-    int y_top    = y + 1;
+		int y_bottom = y - 1;
+		int y_top    = y + 1;
 
-    CurvePoint cell = new CurvePoint();
-    cell.x = x;
-    cell.y = y;
-    cell.type = CurveCellType.N;
+		CurvePoint cell = new CurvePoint();
+		cell.x = x;
+		cell.y = y;
+		cell.type = CurveCellType.N;
 
-    if(y_bottom < 0)
-    {
-        // EB - edge-bottom
-        if (y_bottom == -1                    &&
-            hilbertPointsInt[x, y]       == 1 &&
-            hilbertPointsInt[x_right, y] == 0 &&
-            hilbertPointsInt[x, y_top]   == 1 &&
-            hilbertPointsInt[x_left, y]  == 0)
-        {
-            cell.type = CurveCellType.EB;
-        }
-    }
-    else if(x_left < 0)
-    {
-        // EL - edge-left
-        if (x_left == -1 &&
-            hilbertPointsInt[x, y]        == 1 &&
-            hilbertPointsInt[x_right, y]  == 1 &&
-            hilbertPointsInt[x, y_top]    == 0 &&
-            hilbertPointsInt[x, y_bottom] == 0)
-        {
-            cell.type = CurveCellType.EL;
-        }
-    }
-    else if (x_right > width - 1)
-    {
-        // ER - edge-right
-        if (x_right == width                   &&
-            hilbertPointsInt[x, y]        == 1 &&
-            hilbertPointsInt[x_left, y]   == 1 &&
-            hilbertPointsInt[x, y_top]    == 0 &&
-            hilbertPointsInt[x, y_bottom] == 0)
-        {
-            cell.type = CurveCellType.ER;
-        }
-    }
-    else if (y_top > height - 1)
-    {
-        // ET - edge-top
-        if (y_top == height                    &&
-            hilbertPointsInt[x, y]        == 1 &&
-            hilbertPointsInt[x_left, y]   == 0 &&
-            hilbertPointsInt[x, y_top]    == 0 &&
-            hilbertPointsInt[x, y_bottom] == 1)
-        {
-            cell.type = CurveCellType.ET;
-        }
-    }
-    // We are dealing with 'edge' cell
-    else if (x_left   == 0 || x_right == width  - 1 ||
-             y_bottom == 0 || y_top   == height - 1)
-    {
-        // ER - edge-right
-        if (x_right + 1 == width                &&
-            hilbertPointsInt[x_right, y]   == 1 &&
-            hilbertPointsInt[x, y]         == 1 &&
-            hilbertPointsInt[x, y_top]     == 0 &&
-            hilbertPointsInt[x, y_bottom]  == 0 )
-        {
-            cell.type = CurveCellType.ER;
-        }
-        // EL - edge-left
-        else if (x_left                        == 0 &&
-                 hilbertPointsInt[x_left, y]   == 1 &&
-                 hilbertPointsInt[x, y]        == 1 &&
-                 hilbertPointsInt[x, y_top]    == 0 &&
-                 hilbertPointsInt[x, y_bottom] == 0)
-        {
-            cell.type = CurveCellType.EL;
-        }
-        // ET - edge-top
-        else if (y_top + 1                     == height &&
-                 hilbertPointsInt[x_left, y]   == 0 &&
-                 hilbertPointsInt[x_right, y]  == 0 &&
-                 hilbertPointsInt[x, y]        == 1 &&
-                 hilbertPointsInt[x, y_bottom] == 1)
-        {
-            cell.type = CurveCellType.ET;
-        }
-        // EB - edge-bottom
-        else if (y_bottom                      == 0 &&
-                 hilbertPointsInt[x_left,  y]  == 0 &&
-                 hilbertPointsInt[x_right, y]  == 0 &&
-                 hilbertPointsInt[x, y_top]    == 1 &&
-                 hilbertPointsInt[x, y]        == 1)
-        {
-            cell.type = CurveCellType.EB;
-        }
-    }
-    else if (x_left   > 0 && x_right < width  - 1 &&
-             y_bottom > 0 && y_top   < height - 1)
-    {
-        // H - horizontal
-        if (hilbertPointsInt[x_left, y]        == 1 &&
-            hilbertPointsInt[x_right, y]       == 1 &&
-            hilbertPointsInt[x, y_top]         == 0 &&
-            hilbertPointsInt[x, y_bottom]      == 0)
-        {
-            cell.type = CurveCellType.H;
-        }
-        // V - vertical
-        else if (hilbertPointsInt[x_left, y]   == 0 &&
-                 hilbertPointsInt[x_right, y]  == 0 &&
-                 hilbertPointsInt[x, y_top]    == 1 &&
-                 hilbertPointsInt[x, y_bottom] == 1)
-        {
-            cell.type = CurveCellType.V;
-        }
-        // TL - top-left
-        else if (hilbertPointsInt[x_left, y]   == 1 &&
-                 hilbertPointsInt[x_right, y]  == 0 &&
-                 hilbertPointsInt[x, y_top]    == 0 &&
-                 hilbertPointsInt[x, y_bottom] == 1)
-        {
-            cell.type = CurveCellType.TL;
-        }
-        // TR - top-right
-        else if (hilbertPointsInt[x_left, y]   == 0 &&
-                 hilbertPointsInt[x_right, y]  == 1 &&
-                 hilbertPointsInt[x, y_top]    == 0 &&
-                 hilbertPointsInt[x, y_bottom] == 1)
-        {
-            cell.type = CurveCellType.TR;
-        }
-        // BL - bottom-left
-        else if (hilbertPointsInt[x_left, y]   == 1 &&
-                 hilbertPointsInt[x_right, y]  == 0 &&
-                 hilbertPointsInt[x, y_top]    == 1 &&
-                 hilbertPointsInt[x, y_bottom] == 0)
-        {
-            cell.type = CurveCellType.BL;
-        }
-        // BR - bottom-right
-        else if (hilbertPointsInt[x_left, y]   == 0 &&
-                 hilbertPointsInt[x_right, y]  == 1 &&
-                 hilbertPointsInt[x, y_top]    == 1 &&
-                 hilbertPointsInt[x, y_bottom] == 0)
-        {
-            cell.type = CurveCellType.BR;
-        }
-    }
-
-    return cell;
- }
-
+		if(y_bottom < 0)
+		{
+			// EB - edge-bottom
+			if (y_bottom == -1                    &&
+				hilbertPointsInt[x, y]       == 1 &&
+				hilbertPointsInt[x_right, y] == 0 &&
+				hilbertPointsInt[x, y_top]   == 1 &&
+				hilbertPointsInt[x_left, y]  == 0)
+			{
+				cell.type = CurveCellType.EB;
+			}
+		}
+		else if(x_left < 0)
+		{
+			// EL - edge-left
+			if (x_left == -1 &&
+				hilbertPointsInt[x, y]        == 1 &&
+				hilbertPointsInt[x_right, y]  == 1 &&
+				hilbertPointsInt[x, y_top]    == 0 &&
+				hilbertPointsInt[x, y_bottom] == 0)
+			{
+				cell.type = CurveCellType.EL;
+			}
+		}
+		else if (x_right > width - 1)
+		{
+			// ER - edge-right
+			if (x_right == width                   &&
+				hilbertPointsInt[x, y]        == 1 &&
+				hilbertPointsInt[x_left, y]   == 1 &&
+				hilbertPointsInt[x, y_top]    == 0 &&
+				hilbertPointsInt[x, y_bottom] == 0)
+			{
+				cell.type = CurveCellType.ER;
+			}
+		}
+		else if (y_top > height - 1)
+		{
+			// ET - edge-top
+			if (y_top == height                    &&
+				hilbertPointsInt[x, y]        == 1 &&
+				hilbertPointsInt[x_left, y]   == 0 &&
+				hilbertPointsInt[x, y_top]    == 0 &&
+				hilbertPointsInt[x, y_bottom] == 1)
+			{
+				cell.type = CurveCellType.ET;
+			}
+		}
+		// We are dealing with 'edge' cell
+		else if (x_left   == 0 || x_right == width  - 1 ||
+				y_bottom == 0 || y_top   == height - 1)
+		{
+			// ER - edge-right
+			if (x_right + 1 == width                &&
+				hilbertPointsInt[x_right, y]   == 1 &&
+				hilbertPointsInt[x, y]         == 1 &&
+				hilbertPointsInt[x, y_top]     == 0 &&
+				hilbertPointsInt[x, y_bottom]  == 0 )
+			{
+				cell.type = CurveCellType.ER;
+			}
+			// EL - edge-left
+			else if (x_left                        == 0 &&
+					hilbertPointsInt[x_left, y]   == 1 &&
+					hilbertPointsInt[x, y]        == 1 &&
+					hilbertPointsInt[x, y_top]    == 0 &&
+					hilbertPointsInt[x, y_bottom] == 0)
+			{
+				cell.type = CurveCellType.EL;
+			}
+			// ET - edge-top
+			else if (y_top + 1                     == height &&
+					hilbertPointsInt[x_left, y]   == 0 &&
+					hilbertPointsInt[x_right, y]  == 0 &&
+					hilbertPointsInt[x, y]        == 1 &&
+					hilbertPointsInt[x, y_bottom] == 1)
+			{
+				cell.type = CurveCellType.ET;
+			}
+			// EB - edge-bottom
+			else if (y_bottom                      == 0 &&
+					hilbertPointsInt[x_left,  y]  == 0 &&
+					hilbertPointsInt[x_right, y]  == 0 &&
+					hilbertPointsInt[x, y_top]    == 1 &&
+					hilbertPointsInt[x, y]        == 1)
+			{
+				cell.type = CurveCellType.EB;
+			}
+		}
+		else if (x_left   > 0 && x_right < width  - 1 &&
+				y_bottom > 0 && y_top   < height - 1)
+		{
+			// H - horizontal
+			if (hilbertPointsInt[x_left, y]        == 1 &&
+				hilbertPointsInt[x_right, y]       == 1 &&
+				hilbertPointsInt[x, y_top]         == 0 &&
+				hilbertPointsInt[x, y_bottom]      == 0)
+			{
+				cell.type = CurveCellType.H;
+			}
+			// V - vertical
+			else if (hilbertPointsInt[x_left, y]   == 0 &&
+					hilbertPointsInt[x_right, y]  == 0 &&
+					hilbertPointsInt[x, y_top]    == 1 &&
+					hilbertPointsInt[x, y_bottom] == 1)
+			{
+				cell.type = CurveCellType.V;
+			}
+			// TL - top-left
+			else if (hilbertPointsInt[x_left, y]   == 1 &&
+					hilbertPointsInt[x_right, y]  == 0 &&
+					hilbertPointsInt[x, y_top]    == 0 &&
+					hilbertPointsInt[x, y_bottom] == 1)
+			{
+				cell.type = CurveCellType.TL;
+			}
+			// TR - top-right
+			else if (hilbertPointsInt[x_left, y]   == 0 &&
+					hilbertPointsInt[x_right, y]  == 1 &&
+					hilbertPointsInt[x, y_top]    == 0 &&
+					hilbertPointsInt[x, y_bottom] == 1)
+			{
+				cell.type = CurveCellType.TR;
+			}
+			// BL - bottom-left
+			else if (hilbertPointsInt[x_left, y]   == 1 &&
+					hilbertPointsInt[x_right, y]  == 0 &&
+					hilbertPointsInt[x, y_top]    == 1 &&
+					hilbertPointsInt[x, y_bottom] == 0)
+			{
+				cell.type = CurveCellType.BL;
+			}
+			// BR - bottom-right
+			else if (hilbertPointsInt[x_left, y]   == 0 &&
+					hilbertPointsInt[x_right, y]  == 1 &&
+					hilbertPointsInt[x, y_top]    == 1 &&
+					hilbertPointsInt[x, y_bottom] == 0)
+			{
+				cell.type = CurveCellType.BR;
+			}
+		}
+		return cell;
+	}
  	public GameObject wallPrefab;
 
 
@@ -759,7 +757,7 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
             }
         }
 		if (hilbertPointsInt != null && drawHilbert)
-    {
+    	{
 			for (int x = 0; x < width; x++)
 			{
 				for (int y = 0; y < height; y++)
