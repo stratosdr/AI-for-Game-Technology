@@ -6,10 +6,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private float sensitivity = 200f;
     [SerializeField] private float walkSpeed = 5f;
+    [SerializeField] private float gravity = -9.81f;
+
     [SerializeField] private float runSpeed = 10f;
 
     private float xRotation = 0f;
     private float speed;
+
+    private Vector3 velocity;
+    private bool isGrounded;
 
     void Start()
     {
@@ -26,6 +31,13 @@ public class PlayerController : MonoBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        
+        //check if player is on the ground
+        isGrounded = cc.isGrounded;
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;  // Reset velocity when grounded
+        }
 
         // Get input for player movement
         float horizontal = Input.GetAxis("Horizontal");
@@ -33,6 +45,7 @@ public class PlayerController : MonoBehaviour
         Vector3 direction = transform.forward * vertical + transform.right * horizontal;
         cc.Move(direction * speed * Time.deltaTime);
 
+        
         if (Input.GetKey(KeyCode.LeftShift))
         {
             speed = runSpeed;
@@ -41,5 +54,9 @@ public class PlayerController : MonoBehaviour
         {
             speed = walkSpeed;
         }
+        
+        velocity.y += gravity * Time.deltaTime;
+        cc.Move(velocity * Time.deltaTime);  // Apply vertical velocity
+        
     }
 }

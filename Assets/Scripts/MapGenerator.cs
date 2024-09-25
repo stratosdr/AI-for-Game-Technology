@@ -708,13 +708,17 @@ public class CellularLevelGenerator : MonoBehaviour
 	void generateColliders() {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				if (generatedMap[x,y] == 0) {
-					GameObject wall = Instantiate(wallPrefab, new Vector3(x, 0, y), Quaternion.identity);
+				if (generatedMap[x, y] == 0) {
+               		GameObject wall = Instantiate(wallPrefab, new Vector3(x, 0, y), Quaternion.identity);
 
                 	wall.transform.SetParent(this.transform);
-					if (wall.GetComponent<BoxCollider>() == null) {
-						wall.AddComponent<BoxCollider>();
+                	BoxCollider collider = wall.GetComponent<BoxCollider>();
+                
+					if (collider == null) {
+						collider = wall.AddComponent<BoxCollider>();
 					}
+				collider.center = Vector3.zero;
+
 				}
 			}
 		}
