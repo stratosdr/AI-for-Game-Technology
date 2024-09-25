@@ -1115,6 +1115,7 @@ MonoBehaviour:
   cam: {fileID: 963194227}
   sensitivity: 200
   walkSpeed: 5
+  gravity: -9.81
   runSpeed: 10
 --- !u!1 &1162290153
 GameObject:
@@ -1899,6 +1900,10 @@ PrefabInstance:
     - target: {fileID: 8308173749397718870, guid: 5593013f9cab340489f544b3e09cc70b, type: 3}
       propertyPath: m_CollisionDetection
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8841798410249251859, guid: 5593013f9cab340489f544b3e09cc70b, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
