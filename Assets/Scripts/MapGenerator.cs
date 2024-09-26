@@ -755,8 +755,8 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
                 for (int y = 0; y < height; y++)
                 {
                     Gizmos.color = (generatedMap[x, y] == 1) ? Color.white : Color.black;
-                    Vector2 pos = new Vector2(x + .5f, y + .5f);
-                    Gizmos.DrawCube(pos, Vector2.one);
+                    Vector3 pos = new Vector3(x + .5f, 0, y + .5f);
+                    Gizmos.DrawCube(pos, Vector3.one);
                 }
             }
         }
@@ -767,8 +767,8 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
 				for (int y = 0; y < height; y++)
 				{
 					Gizmos.color = (hilbertPointsInt[x, y] == 1) ? Color.cyan : Color.clear;
-					Vector2 pos = new Vector2(x + .5f, y + .5f);
-					Gizmos.DrawCube(pos, Vector2.one);
+					Vector3 pos = new Vector3(x + .5f, 0, y + .5f);
+					Gizmos.DrawCube(pos, Vector3.one);
 				}
 			}
     	}
@@ -777,8 +777,8 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
 				for (int y = 0; y < height; y++)
 				{
 					Gizmos.color = (hilbertNegativePointsInt[x, y] == 1) ? Color.green : Color.clear;
-					Vector2 pos = new Vector2(x + .5f, y + .5f);
-					Gizmos.DrawCube(pos, Vector2.one);
+					Vector3 pos = new Vector3(x + .5f, 0, y + .5f);
+					Gizmos.DrawCube(pos, Vector3.one);
 				}
 			}
 		}
@@ -793,18 +793,18 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
 					continue;
 
 				Gizmos.color = Color.yellow;
-				Gizmos.DrawLine(new Vector2(hilbertPoints[i].x + .5f, hilbertPoints[i].y + .5f),
-								new Vector2(hilbertPoints[i + 1].x + .5f, hilbertPoints[i + 1].y + .5f));
+				Gizmos.DrawLine(new Vector3(hilbertPoints[i].x + .5f, 0, hilbertPoints[i].y + .5f),
+								new Vector3(hilbertPoints[i + 1].x + .5f, 0, hilbertPoints[i + 1].y + .5f));
 			}
     	}
 		if (curvePoints != null && drawCurvepoint){
 			for (int i = 0; i < curvePoints.Count; i++)
 			{
 				CurvePoint cPoint = (CurvePoint)curvePoints[i];
-				Gizmos.color = (hilbertPointsInt[cPoint.x, cPoint.y] == 1) ? Color.red : Color.clear;
+				Gizmos.color = (hilbertPointsInt[cPoint.x, cPoint.y] == 1) ? Color.red : Color.blue;
 
-				Vector2 pos = new Vector2(cPoint.x + .5f, cPoint.y + .5f);
-				Gizmos.DrawCube(pos, Vector2.one * 2);
+				Vector3 pos = new Vector3(cPoint.x + .5f, 0, cPoint.y + .5f);
+				Gizmos.DrawCube(pos, Vector3.one * 2);
 			}
 		}
 		// display segments
@@ -816,19 +816,19 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
 				{
 					Vector2Int pos = (Vector2Int)segment.Value[i];
 					Gizmos.color = Color.yellow;
-					Vector2 pos3 = new Vector2(pos.x + .5f, pos.y + .5f);
+					Vector3 pos3 = new Vector3(pos.x + .5f, 0,  pos.y + .5f);
 					Gizmos.DrawCube(pos3, Vector3.one * 2);
 
 					if (i == segment.Value.Count - 1)
 					{
-						Vector2 lastPoint = new Vector2(pos.x + .5f, pos.y + .5f);
+						Vector3 lastPoint = new Vector3(pos.x + .5f, 0, pos.y + .5f);
 						Gizmos.color = Color.red;
 						Gizmos.DrawSphere(lastPoint, 2f);
 					}
 				}
 
 				Vector2 posKey = (Vector2)segment.Key;
-				Vector2 posKey3 = new Vector2(posKey.x + .5f, posKey.y + .5f);
+				Vector3 posKey3 = new Vector3(posKey.x + .5f, 0, posKey.y + .5f);
 				Gizmos.color = Color.red;
 				Gizmos.DrawSphere(posKey3, 2f);
 			}
