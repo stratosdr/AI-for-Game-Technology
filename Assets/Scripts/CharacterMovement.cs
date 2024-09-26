@@ -8,9 +8,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
 
     [SerializeField] private float runSpeed = 10f;
+    [SerializeField] private float pushDecayRate = 2f;
 
     private float speed;
-
+    private Vector3 pushDirection = Vector3.zero;
     private Vector3 velocity;
     private bool isGrounded;
 
@@ -45,4 +46,6 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         cc.Move(velocity * Time.deltaTime);
     }
+
+
 }

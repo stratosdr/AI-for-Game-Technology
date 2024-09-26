@@ -22,8 +22,11 @@ public class CellularLevelGenerator : MonoBehaviour
     public int width;
     public int height;
 
+	public int enemyAmount = 20;
+
 	public GameObject floorPrefab;
 	public GameObject playerPrefab;
+	public GameObject enemyPrefab;
     public string seed;
     private System.Random pseudoRandom;
 
@@ -495,6 +498,14 @@ public class CellularLevelGenerator : MonoBehaviour
 		// Spawn player at a random non-wall location
 		Vector2Int playerPosition = GetRandomNonWallPosition();
 		Vector3 spawnPosition = new Vector3(playerPosition.x, 0.3f, playerPosition.y);
+		for (int i = 0; i < enemyAmount; i++) {
+			Vector2Int enemyPosition;
+			do {
+				enemyPosition = GetRandomNonWallPosition();
+			} while (Vector2.Distance(playerPosition, enemyPosition) < 10);
+			Vector3 enemySpawnPosition = new Vector3(enemyPosition.x, 0.3f, enemyPosition.y);
+			GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition, Quaternion.identity);
+		}
 
 		GameObject player = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
 		CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
