@@ -746,10 +746,10 @@ public class CellularLevelGenerator : MonoBehaviour
 			for (int x = 0; x < width; x++) {
 				if (generatedMap[x, y] == 0) {
                		GameObject wall = Instantiate(wallPrefab, new Vector3(x, 0, y), Quaternion.identity);
-
+					wall.transform.localScale = new Vector3(wall.transform.localScale.x, wall.transform.localScale.y*2, wall.transform.localScale.z);
                 	wall.transform.SetParent(this.transform);
                 	BoxCollider collider = wall.GetComponent<BoxCollider>();
-                
+
 					if (collider == null) {
 						collider = wall.AddComponent<BoxCollider>();
 					}
