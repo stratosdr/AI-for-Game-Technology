@@ -2,10 +2,11 @@
 
 Done Prototype:
 - Map generation 
+- Determine player start and level end areas of map
 
 TODO Prototype:
-- Determine player start and level end points of map
 - Implement Player at start, ensure walls cannot be passed through
+- Implement finish conditions and spawn player at spawn point
 - Make Camera face right direction and focus on player (also make sure the camera doesn't show out of bounds area)
 - Implement generation and behavior of enemies who damage player
 - Remove dead ends from pathway (see Ideas for potential alternative)

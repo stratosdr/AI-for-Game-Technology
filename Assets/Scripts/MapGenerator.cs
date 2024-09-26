@@ -152,6 +152,41 @@ public class CellularLevelGenerator : MonoBehaviour
 			return segmentConnectors;
 		}
 
+	void CreateStartEnd() {
+		if (curvePoints.Count == 0) return;
+		
+		Vector2 start = new Vector2(((CurvePoint)curvePoints[0]).x, ((CurvePoint)curvePoints[0]).y);
+		Vector2 end = new Vector2(((CurvePoint)curvePoints[0]).x, ((CurvePoint)curvePoints[0]).y);
+
+		for (int i = 0; i < curvePoints.Count; i++){
+			Debug.Log(curvePoints[i]);
+			CurvePoint cPoint = (CurvePoint)curvePoints[i];
+
+			if (hilbertPointsInt[cPoint.x, cPoint.y] != 1) continue;
+			// Vector2 point = hilbertPoints[i];
+			if (cPoint.x < start.x) {
+				start.x = cPoint.x; 
+				start.y = cPoint.y; 
+			}
+			if (cPoint.x > end.x) {
+				end.x = cPoint.x; 
+				end.y = cPoint.y; 
+			}
+		}
+		Debug.Log(start);
+		Debug.Log(end);
+
+		GameObject startCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		startCube.transform.position = new Vector3(start.x, 0, start.y); 
+		startCube.transform.localScale = new Vector3(10, 10, 10); 
+		startCube.GetComponent<Renderer>().material.color = Color.green; 
+
+		GameObject endCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		endCube.transform.position = new Vector3(end.x, 0, end.y); 
+		endCube.transform.localScale = new Vector3(10, 10, 10); 
+		endCube.GetComponent<Renderer>().material.color = Color.red; 
+	}
+
 
 	void CreateCurveCorners() {
 		curvePoints.Clear();
@@ -253,6 +288,7 @@ public class CellularLevelGenerator : MonoBehaviour
         CreateSegments();
 		CreateCriticalPath();
 		CreateNegativePath();
+		CreateStartEnd();
 	}
 
 	[SerializeField]
