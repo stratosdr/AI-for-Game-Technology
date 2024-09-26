@@ -21,42 +21,39 @@ public class PlayerController : MonoBehaviour
         cc = GetComponent<CharacterController>();
         speed = walkSpeed;
     }
-
     void Update()
     {
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
+    float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+    float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
 
-        transform.Rotate(Vector3.up * mouseX);
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        
-        //check if player is on the ground
-        isGrounded = cc.isGrounded;
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;  // Reset velocity when grounded
-        }
+    transform.Rotate(Vector3.up * mouseX);
+    xRotation -= mouseY;
+    xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+    cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
-        // Get input for player movement
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-        Vector3 direction = transform.forward * vertical + transform.right * horizontal;
-        cc.Move(direction * speed * Time.deltaTime);
-
-        
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            speed = runSpeed;
-        }
-        else
-        {
-            speed = walkSpeed;
-        }
-        
-        velocity.y += gravity * Time.deltaTime;
-        cc.Move(velocity * Time.deltaTime);  // Apply vertical velocity
-        
+    isGrounded = cc.isGrounded;
+    if (isGrounded && velocity.y < 0)
+    {
+        velocity.y = -5f;
     }
+
+    float horizontal = Input.GetAxis("Horizontal");
+    float vertical = Input.GetAxis("Vertical");
+    Vector3 direction = transform.forward * vertical + transform.right * horizontal;
+    Vector3 projectedDirection = Vector3.ProjectOnPlane(direction, Vector3.up).normalized;
+
+    cc.Move(projectedDirection * speed * Time.deltaTime);
+    if (Input.GetKey(KeyCode.LeftShift))
+    {
+        speed = runSpeed;
+    }
+    else
+    {
+        speed = walkSpeed;
+    }
+    velocity.y += gravity * Time.deltaTime;
+    cc.Move(velocity * Time.deltaTime);
+    }
+
+
 }
