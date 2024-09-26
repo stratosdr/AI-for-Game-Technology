@@ -1113,10 +1113,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cc: {fileID: 1048510303}
   cam: {fileID: 963194227}
-  sensitivity: 200
   walkSpeed: 5
   gravity: -9.81
   runSpeed: 10
+  pushDecayRate: 0.5
 --- !u!1 &1162290153
 GameObject:
   m_ObjectHideFlags: 0
@@ -1491,8 +1491,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 200
   height: 100
+  enemyAmount: 20
   floorPrefab: {fileID: 295745440320790824}
   playerPrefab: {fileID: 1048510296}
+  enemyPrefab: {fileID: 5063787519223793298, guid: 7f6daa98a708485479715d3a80f90a1a, type: 3}
   seed: 
   useRandomSeed: 1
   fillingPercentage: 50
@@ -1518,7 +1520,7 @@ Transform:
   m_GameObject: {fileID: 1636527874}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 132, y: 0, z: 55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1899,7 +1901,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8308173749397718870, guid: 5593013f9cab340489f544b3e09cc70b, type: 3}
       propertyPath: m_CollisionDetection
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8841798410249251859, guid: 5593013f9cab340489f544b3e09cc70b, type: 3}
       propertyPath: m_IsTrigger
