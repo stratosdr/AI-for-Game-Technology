@@ -52,6 +52,8 @@ public class CellularLevelGenerator : MonoBehaviour
 
 	Dictionary<Vector2, ArrayList> segments;
 
+	private GameObject startCube;
+
 
 
 	void CreateCriticalPath() {
@@ -179,15 +181,27 @@ public class CellularLevelGenerator : MonoBehaviour
 		Debug.Log(start);
 		Debug.Log(end);
 
-		GameObject startCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		startCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		startCube.transform.position = new Vector3(start.x, 0, start.y); 
 		startCube.transform.localScale = new Vector3(10, 10, 10); 
-		startCube.GetComponent<Renderer>().material.color = Color.green; 
+		startCube.GetComponent<Renderer>().material.color = Color.clear; 
+
+		Collider startCollider = startCube.GetComponent<Collider>();
+		if (startCollider != null) {
+			startCollider.enabled = false;
+		}
 
 		GameObject endCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		endCube.transform.position = new Vector3(end.x, 0, end.y); 
 		endCube.transform.localScale = new Vector3(10, 10, 10); 
-		endCube.GetComponent<Renderer>().material.color = Color.red; 
+		endCube.GetComponent<Renderer>().material.color = Color.clear; 
+
+		Collider endCollider = endCube.GetComponent<Collider>();
+		if (endCollider != null) {
+			endCollider.isTrigger = true; 
+		}
+
+    	endCube.AddComponent<EndLevel>();
 	}
 
 
@@ -496,7 +510,7 @@ public class CellularLevelGenerator : MonoBehaviour
 		generateColliders();
 
 		// Spawn player at a random non-wall location
-		Vector2Int playerPosition = GetRandomNonWallPosition();
+		Vector2Int playerPosition = GetRandomPlayerStartPosition();
 		Vector3 spawnPosition = new Vector3(playerPosition.x, 0.3f, playerPosition.y);
 		for (int i = 0; i < enemyAmount; i++) {
 			Vector2Int enemyPosition;
@@ -770,6 +784,41 @@ public class CellularLevelGenerator : MonoBehaviour
 			}
 		}
 	}
+
+Vector2Int GetRandomPlayerStartPosition() {
+    List<Vector2Int> nonWallPositions = new List<Vector2Int>();
+
+    for (int x = 1; x < width - 1; x++) {
+        for (int y = 1; y < height - 1; y++) {
+            if (generatedMap[x, y] == 1) {
+                nonWallPositions.Add(new Vector2Int(x, y));
+            }
+        }
+    }
+
+    List<Vector2Int> startCubePositions = new List<Vector2Int>();
+
+	Vector3 startPosition = startCube.transform.position;
+	Vector3 startScale = startCube.transform.localScale;
+    int minX = Mathf.FloorToInt(startPosition.x - startScale.x / 2);
+    int maxX = Mathf.FloorToInt(startPosition.x + startScale.x / 2);
+    int minY = Mathf.FloorToInt(startPosition.z - startScale.z / 2);
+    int maxY = Mathf.FloorToInt(startPosition.z + startScale.z / 2);
+
+    foreach (var pos in nonWallPositions) {
+        if (pos.x >= minX && pos.x <= maxX && pos.y >= minY && pos.y <= maxY) {
+            startCubePositions.Add(pos);
+        }
+    }
+
+    if (startCubePositions.Count == 0) {
+        int randomIndex = pseudoRandom.Next(0, nonWallPositions.Count);
+        return nonWallPositions[randomIndex];
+    }
+
+    int cubeRandomIndex = pseudoRandom.Next(0, startCubePositions.Count);
+    return startCubePositions[cubeRandomIndex];
+}
 
 Vector2Int GetRandomNonWallPosition()
 {
