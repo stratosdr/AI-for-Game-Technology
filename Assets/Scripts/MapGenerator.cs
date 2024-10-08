@@ -27,6 +27,8 @@ public class CellularLevelGenerator : MonoBehaviour
 	public GameObject floorPrefab;
 	public GameObject playerPrefab;
 	public GameObject enemyPrefab;
+	public GameObject endpointPrefab;
+
     public string seed;
     private System.Random pseudoRandom;
 
@@ -183,11 +185,23 @@ public class CellularLevelGenerator : MonoBehaviour
 		startCube.transform.position = new Vector3(start.x, 0, start.y); 
 		startCube.transform.localScale = new Vector3(10, 10, 10); 
 		startCube.GetComponent<Renderer>().material.color = Color.green; 
+		
+		Vector3 playerstart = startCube.transform.position;
+		//playerstart.y += (float)0.5;
+		GameObject player =  Instantiate(playerPrefab, playerstart, Quaternion.identity);
+		CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
 
-		GameObject endCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		Destroy(startCube);
+		if (cameraFollow != null)
+		{
+			cameraFollow.SetPlayer(player.transform);
+		}
+		/*GameObject endCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		endCube.transform.position = new Vector3(end.x, 0, end.y); 
 		endCube.transform.localScale = new Vector3(10, 10, 10); 
-		endCube.GetComponent<Renderer>().material.color = Color.red; 
+		endCube.GetComponent<Renderer>().material.color = Color.red;*/
+		Vector3 ending = new Vector3(end.x, 0, end.y);
+		GameObject endPoint = Instantiate(endpointPrefab, ending, Quaternion.identity); 
 	}
 
 
@@ -335,7 +349,7 @@ public class CellularLevelGenerator : MonoBehaviour
     floor.transform.localScale = new Vector3(width / 10f, 1, height / 10f);
     floor.transform.position = new Vector3(width / 2f, -0.5f, height / 2f);
 
-    BoxCollider floorCollider = floor.GetComponent<BoxCollider>();
+    /*BoxCollider floorCollider = floor.GetComponent<BoxCollider>();
     if (floorCollider == null)
     {
         floorCollider = floor.AddComponent<BoxCollider>();
@@ -343,6 +357,7 @@ public class CellularLevelGenerator : MonoBehaviour
 
     floorCollider.center = new Vector3(0, 0.5f, 0);
     floorCollider.size = new Vector3(floor.transform.localScale.x * 10, 0.1f, floor.transform.localScale.z * 10);
+	*/
 	}
 
 	//Creates path segments
@@ -507,12 +522,12 @@ public class CellularLevelGenerator : MonoBehaviour
 			GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition, Quaternion.identity);
 		}
 
-		GameObject player = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
-		CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
-		if (cameraFollow != null)
-		{
-			cameraFollow.SetPlayer(player.transform);
-		}
+		//GameObject player = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
+		//CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
+		//if (cameraFollow != null)
+		//{
+		//	cameraFollow.SetPlayer(player.transform);
+		//}
 	}
 
 
@@ -749,6 +764,7 @@ public class CellularLevelGenerator : MonoBehaviour
 		return cell;
 	}
  	public GameObject wallPrefab;
+	public GameObject wallEdgePrefab;
 
 
 	//Generates cubes as walls so that there is a mesh
@@ -756,16 +772,25 @@ public class CellularLevelGenerator : MonoBehaviour
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				if (generatedMap[x, y] == 0) {
-               		GameObject wall = Instantiate(wallPrefab, new Vector3(x, 0, y), Quaternion.identity);
-					wall.transform.localScale = new Vector3(wall.transform.localScale.x, wall.transform.localScale.y*2, wall.transform.localScale.z);
-                	wall.transform.SetParent(this.transform);
-                	BoxCollider collider = wall.GetComponent<BoxCollider>();
+					bool isEdge = false;
 
-					if (collider == null) {
-						collider = wall.AddComponent<BoxCollider>();
+					// Check the surrounding areas (up, down, left, right)
+					if (x > 0 && generatedMap[x - 1, y] == 1) isEdge = true; // left
+					if (x < width - 1 && generatedMap[x + 1, y] == 1) isEdge = true; // right
+					if (y > 0 && generatedMap[x, y - 1] == 1) isEdge = true; // down
+					if (y < height - 1 && generatedMap[x, y + 1] == 1) isEdge = true; // up
+
+					// If there's a neighboring wall (value of 1), use wallEdgePrefab
+					GameObject wall;
+					if (isEdge) {
+						wall = Instantiate(wallEdgePrefab, new Vector3(x, 0, y), Quaternion.identity);
+					} else {
+						wall = Instantiate(wallPrefab, new Vector3(x, 0, y), Quaternion.identity);
 					}
-				collider.center = Vector3.zero;
 
+					// Adjust wall scaling
+					wall.transform.localScale = new Vector3(wall.transform.localScale.x, wall.transform.localScale.y * 2, wall.transform.localScale.z);
+					wall.transform.SetParent(this.transform);
 				}
 			}
 		}
