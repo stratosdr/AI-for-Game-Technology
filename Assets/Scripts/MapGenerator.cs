@@ -54,6 +54,8 @@ public class CellularLevelGenerator : MonoBehaviour
 
 	Dictionary<Vector2, ArrayList> segments;
 
+	private GameObject startCube;
+
 
 
 	void CreateCriticalPath() {
@@ -181,7 +183,7 @@ public class CellularLevelGenerator : MonoBehaviour
 		Debug.Log(start);
 		Debug.Log(end);
 
-		GameObject startCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		startCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		startCube.transform.position = new Vector3(start.x, 0, start.y); 
 		startCube.transform.localScale = new Vector3(10, 10, 10); 
 		startCube.GetComponent<Renderer>().material.color = Color.green; 
@@ -511,7 +513,7 @@ public class CellularLevelGenerator : MonoBehaviour
 		generateColliders();
 
 		// Spawn player at a random non-wall location
-		Vector2Int playerPosition = GetRandomNonWallPosition();
+		Vector2Int playerPosition = GetRandomPlayerStartPosition();
 		Vector3 spawnPosition = new Vector3(playerPosition.x, 0.3f, playerPosition.y);
 		for (int i = 0; i < enemyAmount; i++) {
 			Vector2Int enemyPosition;
