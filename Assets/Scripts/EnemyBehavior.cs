@@ -12,7 +12,10 @@ public class EnemyMovement : MonoBehaviour
     public float minWanderTime = 2f;         
     public float maxWanderTime = 5f;         
     public bool drawRadius = true;
-    public float pushForce = 5f;
+    public float knockbackForce = 5f;
+    public float pauseDuration = 2f;
+    private bool isPaused = false;
+    
 
     private Transform player;
     private Vector3 wanderDirection;
@@ -31,9 +34,10 @@ public class EnemyMovement : MonoBehaviour
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player"); 
         Transform closestPlayer = FindClosestPlayer(players);
 
-        if (closestPlayer != null)
+        if (closestPlayer != null && !isPaused)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, closestPlayer.position);
+            
 
             if (distanceToPlayer < detectionRadius)
             {
@@ -97,24 +101,31 @@ public class EnemyMovement : MonoBehaviour
     void OnCollisionEnter(Collision collision) {
 
         if (collision.gameObject.CompareTag("Player")) {
-            PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
-
-            if (playerController != null)
-            {
-                //For now it will instantly restart the level on contact, health needs to be implemented onto the player
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
-                
-                
-                
-                //Vector3 pushDirection = collision.transform.position - transform.position;
-                //pushDirection.y = 0;  // Remove any vertical influence
-                //pushDirection.Normalize();
-                
-                
-                //NEEDS TO BE FIXED
-                //playerController.ApplyPush(pushDirection, pushForce);
+            PlayerController p = collision.gameObject.GetComponent<PlayerController>();
+            if (p != null) {
+                p.health--;
+                Debug.Log("HEALTH DECREASE TO " + p.health);
+                knockback(p, collision);
+                StartCoroutine(PauseBehavior());
             }
+        }
+    }
+
+        // Coroutine to pause the enemy for a few seconds
+    IEnumerator PauseBehavior()
+    {
+        isPaused = true;  // Stop enemy movement
+
+        yield return new WaitForSeconds(pauseDuration);  // Wait for the pause duration
+
+        isPaused = false;  // Resume enemy movement
+    }
+
+    void knockback(PlayerController p, Collision collision) {
+        Rigidbody playerRb = p.GetComponent<Rigidbody>();
+        if (playerRb != null) {
+            Vector3 knockbackDirection = (collision.transform.position - transform.position).normalized;
+            playerRb.AddForce(knockbackDirection * knockbackForce, ForceMode.VelocityChange);
         }
     }
 

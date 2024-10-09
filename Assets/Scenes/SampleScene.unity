@@ -1442,7 +1442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 200
   height: 100
-  enemyAmount: 0
+  enemyAmount: 20
   floorPrefab: {fileID: 7926375138572646288, guid: 5e2ab5e1133c5824ca008eac81a640ec, type: 3}
   playerPrefab: {fileID: 4672066574419436370, guid: 5593013f9cab340489f544b3e09cc70b, type: 3}
   enemyPrefab: {fileID: 5063787519223793298, guid: 7f6daa98a708485479715d3a80f90a1a, type: 3}

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float runSpeed = 10f;
     [SerializeField] private float pushDecayRate = 2f;
+
+    public int health = 10;
 
     private float speed;
     private Vector3 pushDirection = Vector3.zero;
@@ -22,6 +25,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        //RESTART IF DEAD
+        if (health <= 0) {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         Vector3 moveDirection = new Vector3(horizontal, 0f, vertical).normalized;

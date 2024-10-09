@@ -125,7 +125,8 @@ MonoBehaviour:
   minWanderTime: 2
   maxWanderTime: 5
   drawRadius: 1
-  pushForce: 50000000
+  knockbackForce: 75
+  pauseDuration: 1
 --- !u!54 &2433328524811242025
 Rigidbody:
   m_ObjectHideFlags: 0
