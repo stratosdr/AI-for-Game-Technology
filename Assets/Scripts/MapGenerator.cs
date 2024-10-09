@@ -513,13 +513,13 @@ public class CellularLevelGenerator : MonoBehaviour
 		generateColliders();
 
 		// Spawn player at a random non-wall location
-		Vector2Int playerPosition = GetRandomPlayerStartPosition();
-		Vector3 spawnPosition = new Vector3(playerPosition.x, 0.3f, playerPosition.y);
+		//Vector2Int playerPosition = GetRandomPlayerStartPosition();
+		//Vector3 spawnPosition = new Vector3(playerPosition.x, 0.3f, playerPosition.y);
 		for (int i = 0; i < enemyAmount; i++) {
 			Vector2Int enemyPosition;
-			do {
-				enemyPosition = GetRandomNonWallPosition();
-			} while (Vector2.Distance(playerPosition, enemyPosition) < 10);
+			//do {
+			enemyPosition = GetRandomNonWallPosition();
+			//} while (Vector2.Distance(playerPosition, enemyPosition) < 10);
 			Vector3 enemySpawnPosition = new Vector3(enemyPosition.x, 0.3f, enemyPosition.y);
 			GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition, Quaternion.identity);
 		}
