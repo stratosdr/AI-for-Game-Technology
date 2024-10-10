@@ -1,39 +1,56 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class PlayerController : MonoBehaviour
+public class CharacterMovement : MonoBehaviour
 {
-    public Rigidbody rb; // Use Rigidbody instead of CharacterController
+    public Rigidbody rb;
     [SerializeField] private float walkSpeed = 5f;
-    [SerializeField] private float gravity = -9.81f;
-
     [SerializeField] private float runSpeed = 10f;
-    [SerializeField] private float pushDecayRate = 2f;
-
-    public int health = 10;
-
+    [SerializeField] private float gravity = -9.81f;
+    public int health = 10;  // Player's health
+    private int startingHealth;
+    private Vector3 startingPosition;  // Store player's initial position
     private float speed;
-    private Vector3 pushDirection = Vector3.zero;
     private bool isGrounded;
+    private bool isDead = false;
+
+    private LevelManager levelManager;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>(); // Get the Rigidbody component
-        rb.freezeRotation = true; // Prevent player from tipping over
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
         speed = walkSpeed;
+
+        startingHealth = health;
+        startingPosition = transform.position;  // Store initial player position
+
+        levelManager = FindObjectOfType<LevelManager>();
+        if (levelManager == null)
+        {
+            Debug.LogError("LevelManager not found in the scene! Make sure there is a LevelManager GameObject.");
+        }
     }
 
     void Update()
     {
-        //RESTART IF DEAD
-        if (health <= 0) {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (isDead) return;
+
+        if (health <= 0)
+        {
+            isDead = true;
+            levelManager?.ShowYouDiedScreen();  // Call the LevelManager to show YouDiedPanel
+            return;
         }
+
+        HandleMovement();
+    }
+
+    void HandleMovement()
+    {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         Vector3 moveDirection = new Vector3(horizontal, 0f, vertical).normalized;
 
-        // Shift-to-run
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             speed = runSpeed;
@@ -43,11 +60,9 @@ public class PlayerController : MonoBehaviour
             speed = walkSpeed;
         }
 
-        // Apply movement relative to the player's orientation
         Vector3 movement = transform.TransformDirection(moveDirection) * speed;
-        rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z); // Retain y-axis for gravity
+        rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
 
-        // Gravity remains applied on the y-axis, so it won't interfere with horizontal speed
         if (isGrounded && rb.velocity.y <= 0)
         {
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -58,14 +73,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision) {
-        Debug.Log("COLLISION: " + collision.gameObject.name);
-        
-    }
-    
     private void OnCollisionStay(Collision collision)
     {
-        // Detect if grounded (simplified ground check)
         foreach (ContactPoint contact in collision.contacts)
         {
             if (Vector3.Dot(contact.normal, Vector3.up) > 0.5f)
@@ -77,7 +86,15 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        // When exiting a collision, consider the player no longer grounded
         isGrounded = false;
+    }
+
+    // Add this method to reset player state
+    public void ResetPlayer()
+    {
+        transform.position = startingPosition;  // Reset position
+        health = startingHealth;  // Reset health
+        isDead = false;  // Reset death state
+        Debug.Log("Player reset to starting state");
     }
 }

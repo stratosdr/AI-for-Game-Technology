@@ -175,7 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 8308173749397718870}
   walkSpeed: 5
-  gravity: -9.81
   runSpeed: 10
-  pushDecayRate: 0.5
+  gravity: -9.81
   health: 10
+  youDiedPanel: {fileID: 6759630681442239527, guid: bbcef502fccebe041ab8cf9487d9895c, type: 3}
