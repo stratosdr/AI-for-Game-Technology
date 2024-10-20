@@ -93,6 +93,9 @@ public class EnemyBehavior : MonoBehaviour
                 {
                     levelManager.ShowYouDiedScreen();  // Directly call ShowYouDiedScreen instead of using SendMessage
                 }
+
+                Destroy(gameObject);
+
             }
         }
     }
