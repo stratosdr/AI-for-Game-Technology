@@ -60,14 +60,7 @@ public class EnemyBehavior : MonoBehaviour
             CharacterMovement playerMovement = collision.gameObject.GetComponent<CharacterMovement>();
             if (playerMovement != null)
             {
-                playerMovement.health--;  // Reduce player's health by 1
-                Debug.Log("Player Health: " + playerMovement.health);
-
-                // Call LevelManager to show the game over screen if the player dies
-                if (playerMovement.health <= 0 && levelManager != null)
-                {
-                    levelManager.ShowYouDiedScreen();  // Directly call ShowYouDiedScreen instead of using SendMessage
-                }
+                playerMovement.TakeDamage(1);  // Reduce player's health by 1
             }
         }
     }

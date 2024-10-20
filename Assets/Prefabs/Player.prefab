@@ -177,5 +177,6 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 10
   gravity: -9.81
-  health: 10
-  youDiedPanel: {fileID: 6759630681442239527, guid: bbcef502fccebe041ab8cf9487d9895c, type: 3}
+  maxHealth: 10
+  currentHealth: 10
+  healthBar: {fileID: 2314020452297973363, guid: 04030b58317103b41829fa171f01d52d, type: 3}

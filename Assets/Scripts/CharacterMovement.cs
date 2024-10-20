@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;  // For Image handling
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -6,13 +7,14 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 10f;
     [SerializeField] private float gravity = -9.81f;
-    public int health = 10;  // Player's health
-    private int startingHealth;
-    private Vector3 startingPosition;  // Store player's initial position
+    [SerializeField] private int maxHealth = 10;
+    public int currentHealth = 10;  // Player's current health
+    public HealthBar healthBar;  // Reference to HealthBar script
+
+    private Vector3 startingPosition;
     private float speed;
     private bool isGrounded;
     private bool isDead = false;
-
     private LevelManager levelManager;
 
     void Start()
@@ -20,14 +22,24 @@ public class CharacterMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         speed = walkSpeed;
+        currentHealth = maxHealth;
 
-        startingHealth = health;
-        startingPosition = transform.position;  // Store initial player position
+        // Ensure HealthBar is assigned and set max health
+        if (healthBar != null)
+        {
+            healthBar.SetMaxHealth(maxHealth);  // Initialize health bar to full
+        }
+        else
+        {
+            healthBar = FindObjectOfType<HealthBar>();
+            Debug.LogError("HealthBar assigned dynamically");
+        }
 
+        startingPosition = transform.position;
         levelManager = FindObjectOfType<LevelManager>();
         if (levelManager == null)
         {
-            Debug.LogError("LevelManager not found in the scene! Make sure there is a LevelManager GameObject.");
+            Debug.LogError("LevelManager not found in the scene!");
         }
     }
 
@@ -35,10 +47,10 @@ public class CharacterMovement : MonoBehaviour
     {
         if (isDead) return;
 
-        if (health <= 0)
+        if (currentHealth <= 0)
         {
             isDead = true;
-            levelManager?.ShowYouDiedScreen();  // Call the LevelManager to show YouDiedPanel
+            levelManager?.ShowYouDiedScreen();
             return;
         }
 
@@ -89,12 +101,31 @@ public class CharacterMovement : MonoBehaviour
         isGrounded = false;
     }
 
-    // Add this method to reset player state
+    // Method to handle damage taken by player
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(currentHealth, maxHealth);  // Update health bar
+        }
+
+        Debug.Log("Player took " + damage + " damage. Current health: " + currentHealth);
+    }
+
     public void ResetPlayer()
     {
-        transform.position = startingPosition;  // Reset position
-        health = startingHealth;  // Reset health
-        isDead = false;  // Reset death state
+        transform.position = startingPosition;
+        currentHealth = maxHealth;
+        isDead = false;
+
+        if (healthBar != null)
+        {
+            healthBar.SetMaxHealth(maxHealth);  // Reset health bar
+        }
+
         Debug.Log("Player reset to starting state");
     }
 }
