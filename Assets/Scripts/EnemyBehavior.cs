@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyBehavior : MonoBehaviour
@@ -5,13 +6,25 @@ public class EnemyBehavior : MonoBehaviour
     public float wanderSpeed = 2f;
     public float chaseSpeed = 4f;
     public float detectionRadius = 5f;
+    public float safeRadius = 3f;  
+    public float jumpForce = 10f;  
+    public float jumpHeight = 5f; 
+    public float duckingHeightMultiplier = 0.5f; 
+    public float chargingDuration = 1.0f;  
     public float knockbackForce = 5f;
+    public float jumpCooldownDuration = 5.0f;  
 
     private Vector3 wanderDirection;
     private float wanderTimer;
     private bool isPaused = false;
     private Transform player;
     private Rigidbody rb;
+
+    private bool isJumping = false;
+    private bool isCharging = false; 
+    private bool isOnCooldown = false;  
+    private Vector3 savedPlayerPosition;  
+    private Vector3 originalScale; 
 
     // Reference to LevelManager
     private LevelManager levelManager;
@@ -28,26 +41,38 @@ public class EnemyBehavior : MonoBehaviour
         {
             Debug.LogError("LevelManager not found in the scene!");
         }
+        originalScale = transform.localScale;
 
         SetNewWanderDirection();
     }
 
     void Update()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        Transform closestPlayer = FindClosestPlayer(players);
-
-        if (closestPlayer != null && !isPaused)
+        if (!isPaused && !isJumping && !isCharging && !isOnCooldown)
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, closestPlayer.position);
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            Transform closestPlayer = FindClosestPlayer(players);
 
-            if (distanceToPlayer < detectionRadius)
+            if (closestPlayer != null)
             {
-                ChasePlayer(closestPlayer);
-            }
-            else
-            {
-                Wander();
+                float distanceToPlayer = Vector3.Distance(transform.position, closestPlayer.position);
+
+                if (distanceToPlayer < detectionRadius)
+                {
+                    if (distanceToPlayer > safeRadius)
+                    {
+                        ApproachPlayer(closestPlayer);
+                    }
+                    else
+                    {
+                        savedPlayerPosition = closestPlayer.position;
+                        StartCharging();
+                    }
+                }
+                else
+                {
+                    Wander();
+                }
             }
         }
     }
@@ -90,11 +115,60 @@ public class EnemyBehavior : MonoBehaviour
         wanderTimer = Random.Range(2f, 5f);
     }
 
-    void ChasePlayer(Transform targetPlayer)
+    void ApproachPlayer(Transform targetPlayer)
     {
         Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
         rb.MovePosition(rb.position + directionToPlayer * chaseSpeed * Time.deltaTime);
     }
+
+    // Step 1: Start charging (ducking) before jumping
+    void StartCharging()
+    {
+        isCharging = true;
+
+        transform.localScale = new Vector3(originalScale.x, originalScale.y * duckingHeightMultiplier, originalScale.z);
+
+        Invoke(nameof(JumpAfterCharge), chargingDuration); 
+    }
+
+    // Step 2: After charging, jump towards the saved location
+    void JumpAfterCharge()
+    {
+        transform.localScale = originalScale;
+
+        StartJump(savedPlayerPosition);
+    }
+
+    void StartJump(Vector3 targetPosition)
+    {
+        isCharging = false;  
+        isJumping = true;
+
+        Vector3 directionToTarget = (targetPosition - transform.position).normalized;
+
+        Vector3 horizontalVelocity = directionToTarget * jumpForce;
+
+        float verticalVelocity = Mathf.Sqrt(2 * jumpHeight * Physics.gravity.magnitude);
+
+        Vector3 jumpVelocity = new Vector3(horizontalVelocity.x, verticalVelocity, horizontalVelocity.z);
+
+        rb.velocity = jumpVelocity;
+
+        // Begin cooldown period after jump starts
+        StartCoroutine(HandleJumpCooldown());
+    }
+
+    // Step 3: Handle jump cooldown period
+    private IEnumerator HandleJumpCooldown()
+    {
+        isOnCooldown = true;
+
+        yield return new WaitForSeconds(jumpCooldownDuration);
+
+        isJumping = false;
+        isOnCooldown = false;
+    }
+
 
     Transform FindClosestPlayer(GameObject[] players)
     {
@@ -121,5 +195,7 @@ public class EnemyBehavior : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, safeRadius);
     }
 }
