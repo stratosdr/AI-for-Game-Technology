@@ -14,7 +14,10 @@ public class HealthBar : MonoBehaviour
     // Update the health bar's fill amount based on the current health
     public void SetHealth(float currentHealth, float maxHealth)
     {
+        Debug.Log($"Current Health: {currentHealth}, Max Health: {maxHealth}");
+
         healthBarFill.fillAmount = (float)currentHealth/ (float)maxHealth;
         Debug.Log("HealthBarFill: " + healthBarFill.fillAmount);
+        Canvas.ForceUpdateCanvases();
     }
 }

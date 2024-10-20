@@ -177,6 +177,6 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 10
   gravity: -9.81
-  maxHealth: 10
-  currentHealth: 10
+  maxHealth: 5
+  currentHealth: 5
   healthBar: {fileID: 2314020452297973363, guid: 04030b58317103b41829fa171f01d52d, type: 3}
