@@ -122,11 +122,13 @@ MonoBehaviour:
   wanderSpeed: 2
   chaseSpeed: 6
   detectionRadius: 20
-  minWanderTime: 2
-  maxWanderTime: 5
-  drawRadius: 1
+  safeRadius: 3
+  jumpForce: 75
+  jumpHeight: 5
+  duckingHeightMultiplier: 0.5
+  chargingDuration: 0.2
   knockbackForce: 75
-  pauseDuration: 1
+  jumpCooldownDuration: 5
 --- !u!54 &2433328524811242025
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -136,7 +138,7 @@ Rigidbody:
   m_GameObject: {fileID: 5063787519223793298}
   serializedVersion: 4
   m_Mass: 10
-  m_Drag: 0
+  m_Drag: 2
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
