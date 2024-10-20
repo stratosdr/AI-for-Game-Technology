@@ -25,6 +25,7 @@ public class CellularLevelGenerator : MonoBehaviour
 	public int enemyAmount = 20;
 
 	public GameObject floorPrefab;
+	public GameObject arrowPrefab;
 	public GameObject playerPrefab;
 	public GameObject enemyPrefab;
 	public GameObject endpointPrefab;
@@ -161,7 +162,7 @@ public class CellularLevelGenerator : MonoBehaviour
 
 	void CreateStartEnd() {
 		if (curvePoints.Count == 0) return;
-		
+
 		Vector2 start = new Vector2(((CurvePoint)curvePoints[0]).x, ((CurvePoint)curvePoints[0]).y);
 		Vector2 end = new Vector2(((CurvePoint)curvePoints[0]).x, ((CurvePoint)curvePoints[0]).y);
 
@@ -172,22 +173,22 @@ public class CellularLevelGenerator : MonoBehaviour
 			if (hilbertPointsInt[cPoint.x, cPoint.y] != 1) continue;
 			// Vector2 point = hilbertPoints[i];
 			if (cPoint.x < start.x) {
-				start.x = cPoint.x; 
-				start.y = cPoint.y; 
+				start.x = cPoint.x;
+				start.y = cPoint.y;
 			}
 			if (cPoint.x > end.x) {
-				end.x = cPoint.x; 
-				end.y = cPoint.y; 
+				end.x = cPoint.x;
+				end.y = cPoint.y;
 			}
 		}
 		Debug.Log(start);
 		Debug.Log(end);
 
 		startCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		startCube.transform.position = new Vector3(start.x, 0, start.y); 
-		startCube.transform.localScale = new Vector3(10, 10, 10); 
-		startCube.GetComponent<Renderer>().material.color = Color.green; 
-		
+		startCube.transform.position = new Vector3(start.x, 0, start.y);
+		startCube.transform.localScale = new Vector3(10, 10, 10);
+		startCube.GetComponent<Renderer>().material.color = Color.green;
+
 		Vector3 playerstart = startCube.transform.position;
 		//playerstart.y += (float)0.5;
 		GameObject player =  Instantiate(playerPrefab, playerstart, Quaternion.identity);
@@ -199,11 +200,21 @@ public class CellularLevelGenerator : MonoBehaviour
 			cameraFollow.SetPlayer(player.transform);
 		}
 		/*GameObject endCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		endCube.transform.position = new Vector3(end.x, 0, end.y); 
-		endCube.transform.localScale = new Vector3(10, 10, 10); 
+		endCube.transform.position = new Vector3(end.x, 0, end.y);
+		endCube.transform.localScale = new Vector3(10, 10, 10);
 		endCube.GetComponent<Renderer>().material.color = Color.red;*/
 		Vector3 ending = new Vector3(end.x, 0, end.y);
-		GameObject endPoint = Instantiate(endpointPrefab, ending, Quaternion.identity); 
+		GameObject endPoint = Instantiate(endpointPrefab, ending, Quaternion.identity);
+
+		// Create the arrow
+		GameObject arrow = Instantiate(arrowPrefab, player.transform.position, Quaternion.identity);
+		ArrowFollow arrowFollow = arrow.GetComponent<ArrowFollow>();
+
+		if (arrowFollow != null)
+		{
+			arrowFollow.player = player.transform;     // Assign player to arrow
+			arrowFollow.endPoint = endPoint.transform; // Assign end point to arrow
+		}
 	}
 
 
