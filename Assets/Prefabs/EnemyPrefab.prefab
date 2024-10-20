@@ -123,12 +123,12 @@ MonoBehaviour:
   chaseSpeed: 6
   detectionRadius: 20
   safeRadius: 3
-  jumpForce: 75
+  jumpForce: 35
   jumpHeight: 5
   duckingHeightMultiplier: 0.5
   chargingDuration: 0.2
   knockbackForce: 75
-  jumpCooldownDuration: 5
+  jumpCooldownDuration: 3
 --- !u!54 &2433328524811242025
 Rigidbody:
   m_ObjectHideFlags: 0
