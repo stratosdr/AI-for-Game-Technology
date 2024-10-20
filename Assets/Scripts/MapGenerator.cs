@@ -520,7 +520,7 @@ public class CellularLevelGenerator : MonoBehaviour
 			//do {
 			enemyPosition = GetRandomNonWallPosition();
 			//} while (Vector2.Distance(playerPosition, enemyPosition) < 10);
-			Vector3 enemySpawnPosition = new Vector3(enemyPosition.x, 0.3f, enemyPosition.y);
+			Vector3 enemySpawnPosition = new Vector3(enemyPosition.x, -0.25f, enemyPosition.y);
 			GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition, Quaternion.identity);
 		}
 
