@@ -1,0 +1,19 @@
+{
+    "playerId": "be212cef-d614-4f24-a27b-6518ae89fa9c",
+    "sessions": [
+        {
+            "levelTime": 127.2708740234375,
+            "levelComplete": true,
+            "timesRestarted": 0,
+            "timesDied": 0,
+            "averageLevelTime": 127.2708740234375,
+            "timeSprinting": 6.8924560546875,
+            "timeWalking": 120.37841796875,
+            "damageTaken": 4,
+            "averageDamageTaken": 4.0,
+            "timesPaused": 0,
+            "detectionTime": 116.48104095458985,
+            "collisions": 12
+        }
+    ]
+}

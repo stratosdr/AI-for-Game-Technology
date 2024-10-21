@@ -1,0 +1,33 @@
+{
+    "playerId": "4fc47383-bb20-4899-af33-3afb3e9e8440",
+    "sessions": [
+        {
+            "levelTime": 81.9285888671875,
+            "levelComplete": false,
+            "timesRestarted": 0,
+            "timesDied": 1,
+            "averageLevelTime": 81.9285888671875,
+            "timeSprinting": 1.099151611328125,
+            "timeWalking": 80.82943725585938,
+            "damageTaken": 5,
+            "averageDamageTaken": 5.0,
+            "timesPaused": 0,
+            "detectionTime": 62.1290168762207,
+            "collisions": 6
+        },
+        {
+            "levelTime": 78.61503601074219,
+            "levelComplete": false,
+            "timesRestarted": 0,
+            "timesDied": 1,
+            "averageLevelTime": 78.61503601074219,
+            "timeSprinting": 50.239013671875,
+            "timeWalking": 28.376022338867189,
+            "damageTaken": 5,
+            "averageDamageTaken": 5.0,
+            "timesPaused": 0,
+            "detectionTime": 92.0236587524414,
+            "collisions": 40
+        }
+    ]
+}
