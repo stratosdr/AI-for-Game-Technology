@@ -10,6 +10,7 @@ public class LevelManager : MonoBehaviour
     public GameObject gameplayUI;     // Reference to Gameplay UI (optional)
 
     private CharacterMovement playerMovement;  // Reference to CharacterMovement
+    private AnalyticsManager analyticsManager;
 
     void Start()
     {
@@ -26,6 +27,12 @@ public class LevelManager : MonoBehaviour
         {
             Debug.LogError("CharacterMovement script not found!");
         }
+
+        analyticsManager = FindObjectOfType<AnalyticsManager>();
+        if (analyticsManager == null)
+        {
+            Debug.LogError("AnalyticsManager script not found!");
+        }
     }
 
     // Method to start the game (hide main menu and show gameplay UI)
@@ -36,6 +43,8 @@ public class LevelManager : MonoBehaviour
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (gameplayUI != null) gameplayUI.SetActive(true);
         if (pauseButton != null) pauseButton.SetActive(true);
+
+        analyticsManager.StartNewSession();
 
         Time.timeScale = 1f;  // Resume game time
         Debug.Log("Game Started");
@@ -82,6 +91,7 @@ public class LevelManager : MonoBehaviour
             pauseButton.SetActive(false);  // Hide the Pause Button
         }
 
+        analyticsManager.RecordPause(); // Record pause in analytics
         Time.timeScale = 0f;  // Pause the game
         Debug.Log("Game Paused");
     }
@@ -133,6 +143,7 @@ public class LevelManager : MonoBehaviour
             gameplayUI.SetActive(true);
         }
 
+        analyticsManager.RecordRestart(); // Record restart in analytics
         Time.timeScale = 1f;  // Ensure time is running normally
         Debug.Log("Game Restarted");
     }
@@ -142,21 +153,25 @@ public class LevelManager : MonoBehaviour
     {
         ResetGame();  // Reset the game when returning to the main menu
 
+        analyticsManager.EndSession(false, false); // Start new session for analytics
+
         Time.timeScale = 1f;  // Resume time if paused
 
         if (youDiedPanel != null) youDiedPanel.SetActive(false);
         if (pauseMenuPanel != null) pauseMenuPanel.SetActive(false);
         if (gameplayUI != null) gameplayUI.SetActive(false);
         if (pauseButton != null) pauseButton.SetActive(false);
-        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
-
+        //if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
         Debug.Log("Returned to Main Menu");
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     // Method to quit the game
     public void QuitGame()
     {
         Debug.Log("Quitting the game...");
+        analyticsManager.EndSession(false, false);
+        analyticsManager.SaveAnalytics(); // Save analytics on quit
         Application.Quit();  // Quit the game (doesn't work in editor)
     }
 }

@@ -191,6 +191,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &357976605
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 357976607}
+  - component: {fileID: 357976606}
+  m_Layer: 0
+  m_Name: AnalyticsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &357976606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357976605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50d409e79c34cee42af8e6948a2f166a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &357976607
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357976605}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &859732325
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,6 +494,8 @@ MonoBehaviour:
   youDiedPanel: {fileID: 0}
   pauseMenuPanel: {fileID: 0}
   pauseButton: {fileID: 0}
+  mainMenuPanel: {fileID: 0}
+  gameplayUI: {fileID: 0}
 --- !u!4 &1448545110
 Transform:
   m_ObjectHideFlags: 0
@@ -1058,3 +1104,4 @@ SceneRoots:
   - {fileID: 263747306}
   - {fileID: 2064167615}
   - {fileID: 1448545110}
+  - {fileID: 357976607}

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,12 +6,19 @@ public class PauseMenu : MonoBehaviour
 {
     [SerializeField] GameObject pauseMenu;
     [SerializeField] GameObject pauseButton;
+    private AnalyticsManager analyticsManager;
+
+    void Start()
+    {
+        analyticsManager = FindObjectOfType<AnalyticsManager>(); // Get reference to AnalyticsManager
+    }
 
     public void Pause()
     {
         pauseMenu.SetActive(true);
         pauseButton.SetActive(false);
         Time.timeScale = 0f;
+        analyticsManager.RecordPause(); // Record pause in analytics
     }
 
     public void Resume()
@@ -24,6 +30,8 @@ public class PauseMenu : MonoBehaviour
 
     public void Quit()
     {
+        analyticsManager.EndSession(false, false);
+        analyticsManager.SaveAnalytics(); // Save analytics on quit
         Application.Quit();
     }
 
@@ -31,5 +39,6 @@ public class PauseMenu : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1f;
+        analyticsManager.RecordRestart(); // Record restart in analytics
     }
 }

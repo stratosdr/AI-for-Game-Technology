@@ -5,13 +5,20 @@ using UnityEngine.SceneManagement;
 
 public class EndPoint : MonoBehaviour
 {
-    void OnTriggerEnter(Collider collider)
-{
-    if (collider.CompareTag("Player"))
+    private AnalyticsManager analyticsManager;
+
+    void Start()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
-
+        analyticsManager = FindObjectOfType<AnalyticsManager>(); // Get reference to AnalyticsManager
     }
-}
+
+    void OnTriggerEnter(Collider collider)
+    {
+        if (collider.CompareTag("Player"))
+        {
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            analyticsManager.EndSession(true, true); // End session on level completion
+            SceneManager.LoadScene("MainMenuScene");
+        }
+    }
 }

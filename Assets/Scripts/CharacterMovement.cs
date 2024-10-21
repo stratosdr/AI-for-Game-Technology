@@ -16,6 +16,7 @@ public class CharacterMovement : MonoBehaviour
     private bool isGrounded;
     private bool isDead = false;
     private LevelManager levelManager;
+    private AnalyticsManager analyticsManager;
 
     void Start()
     {
@@ -37,9 +38,15 @@ public class CharacterMovement : MonoBehaviour
 
         startingPosition = transform.position;
         levelManager = FindObjectOfType<LevelManager>();
+        analyticsManager = FindObjectOfType<AnalyticsManager>();
+
         if (levelManager == null)
         {
             Debug.LogError("LevelManager not found in the scene!");
+        }
+        if (analyticsManager == null)
+        {
+            Debug.LogError("AnalyticsManager not found in the scene!");
         }
     }
 
@@ -50,8 +57,9 @@ public class CharacterMovement : MonoBehaviour
         if (currentHealth <= 0)
         {
             isDead = true;
-            levelManager?.ShowYouDiedScreen();
-            return;
+            analyticsManager.RecordDeath();
+            levelManager?.ShowYouDiedScreen();  // Call the LevelManager to show YouDiedPanel
+           return;
         }
 
         HandleMovement();
@@ -66,10 +74,12 @@ public class CharacterMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             speed = runSpeed;
+            analyticsManager.RecordWalking();
         }
         else if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             speed = walkSpeed;
+            analyticsManager.RecordSprinting();
         }
 
         Vector3 movement = transform.TransformDirection(moveDirection) * speed;
@@ -98,6 +108,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
+        analyticsManager.RecordCollision();
         isGrounded = false;
     }
 

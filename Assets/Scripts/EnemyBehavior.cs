@@ -28,6 +28,10 @@ public class EnemyBehavior : MonoBehaviour
 
     // Reference to LevelManager
     private LevelManager levelManager;
+    private AnalyticsManager analyticsManager;
+    
+    private float detectionTimer = 0f; // Timer for detecting player
+    private bool isPlayerDetected = false; // Flag to check if player is detected
 
     void Start()
     {
@@ -36,10 +40,15 @@ public class EnemyBehavior : MonoBehaviour
 
         // Find the LevelManager in the scene
         levelManager = FindObjectOfType<LevelManager>();
+        analyticsManager = FindObjectOfType<AnalyticsManager>();
 
         if (levelManager == null)
         {
             Debug.LogError("LevelManager not found in the scene!");
+        }
+        if (analyticsManager == null)
+        {
+            Debug.LogError("AnalyticsManager not found in the scene!");
         }
         originalScale = transform.localScale;
 
@@ -62,16 +71,19 @@ public class EnemyBehavior : MonoBehaviour
                     if (distanceToPlayer > safeRadius)
                     {
                         ApproachPlayer(closestPlayer);
+                        StepDetectionTimer(); // Step detection timer when the player is approached
                     }
                     else
                     {
                         savedPlayerPosition = closestPlayer.position;
                         StartCharging();
+                        StopDetectionTimer(); // Stop detection timer when the player is charged
                     }
                 }
                 else
                 {
                     Wander();
+                    StopDetectionTimer(); // Stop detection timer when the player is out of range
                 }
             }
         }
@@ -91,6 +103,7 @@ public class EnemyBehavior : MonoBehaviour
                 // Call LevelManager to show the game over screen if the player dies
                 */
                 playerMovement.TakeDamage(1);
+                analyticsManager.RecordDamage(1);
                 if (playerMovement.currentHealth <= 0 && levelManager != null)
                 {
                     levelManager.ShowYouDiedScreen();  // Directly call ShowYouDiedScreen instead of using SendMessage
@@ -194,6 +207,29 @@ public class EnemyBehavior : MonoBehaviour
         }
 
         return bestTarget;
+    }
+
+    void StepDetectionTimer()
+    {
+        if (!isPlayerDetected)
+        {
+            isPlayerDetected = true; // Mark player as detected
+            detectionTimer = 0f; // Reset timer
+        }
+        else
+        {
+            detectionTimer += Time.deltaTime; // Increase timer
+        }
+    }
+
+    void StopDetectionTimer()
+    {
+        if (isPlayerDetected)
+        {
+            isPlayerDetected = false; // Mark player as no longer detected
+            analyticsManager.RecordDetectionTime(detectionTimer); // Record detection time
+            detectionTimer = 0f; // Reset the timer
+        }
     }
 
     void OnDrawGizmosSelected()
