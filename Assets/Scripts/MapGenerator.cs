@@ -25,7 +25,7 @@ public class CellularLevelGenerator : MonoBehaviour
 	public int enemyAmount = 20;
 
 	public GameObject floorPrefab;
-	// public GameObject arrowPrefab;
+	public GameObject arrowPrefab;
 	public GameObject playerPrefab;
 	public GameObject enemyPrefab;
 	public GameObject endpointPrefab;
@@ -206,15 +206,15 @@ public class CellularLevelGenerator : MonoBehaviour
 		Vector3 ending = new Vector3(end.x, 0, end.y);
 		GameObject endPoint = Instantiate(endpointPrefab, ending, Quaternion.identity);
 
-		// // Create the arrow
-		// GameObject arrow = Instantiate(arrowPrefab, player.transform.position, Quaternion.identity);
-		// ArrowFollow arrowFollow = arrow.GetComponent<ArrowFollow>();
+		// Create the arrow
+		GameObject arrow = Instantiate(arrowPrefab, player.transform.position, Quaternion.identity);
+		ArrowFollow arrowFollow = arrow.GetComponent<ArrowFollow>();
 
-		// if (arrowFollow != null)
-		// {
-		// 	arrowFollow.player = player.transform;     // Assign player to arrow
-		// 	arrowFollow.endPoint = endPoint.transform; // Assign end point to arrow
-		// }
+		if (arrowFollow != null)
+		{
+			arrowFollow.player = player.transform;     // Assign player to arrow
+			arrowFollow.endPoint = endPoint.transform; // Assign end point to arrow
+		}
 	}
 
 
