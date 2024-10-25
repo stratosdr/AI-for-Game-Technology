@@ -1,20 +1,22 @@
 using UnityEngine;
-using UnityEngine.UI;  // For Image handling
 
 public class CharacterMovement : MonoBehaviour
 {
     public Rigidbody rb;
+    public Animator animator;
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 10f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private int maxHealth = 10;
-    public int currentHealth = 10;  // Player's current health
-    public HealthBar healthBar;  // Reference to HealthBar script
+    public int currentHealth = 10;  // Player's health
+    public HealthBar healthBar; // Reference to HealthBar script
 
+    private int startingHealth;
     private Vector3 startingPosition;
     private float speed;
     private bool isGrounded;
     private bool isDead = false;
+
     private LevelManager levelManager;
     private AnalyticsManager analyticsManager;
 
@@ -22,21 +24,15 @@ public class CharacterMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        animator = GetComponent<Animator>();
+
         speed = walkSpeed;
         currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
 
-        // Ensure HealthBar is assigned and set max health
-        if (healthBar != null)
-        {
-            healthBar.SetMaxHealth(maxHealth);  // Initialize health bar to full
-        }
-        else
-        {
-            healthBar = FindObjectOfType<HealthBar>();
-            Debug.LogError("HealthBar assigned dynamically");
-        }
-
+        startingHealth = currentHealth;
         startingPosition = transform.position;
+
         levelManager = FindObjectOfType<LevelManager>();
         analyticsManager = FindObjectOfType<AnalyticsManager>();
 
@@ -44,9 +40,20 @@ public class CharacterMovement : MonoBehaviour
         {
             Debug.LogError("LevelManager not found in the scene!");
         }
+<<<<<<< Updated upstream
         if (analyticsManager == null)
         {
             Debug.LogError("AnalyticsManager not found in the scene!");
+=======
+
+        if (healthBar != null)
+        {
+            healthBar.SetMaxHealth(currentHealth);
+        }
+        else
+        {
+            Debug.LogError("HealthBar is not assigned in the Inspector!");
+>>>>>>> Stashed changes
         }
     }
 
@@ -71,6 +78,7 @@ public class CharacterMovement : MonoBehaviour
         float vertical = Input.GetAxis("Vertical");
         Vector3 moveDirection = new Vector3(horizontal, 0f, vertical).normalized;
 
+<<<<<<< Updated upstream
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             speed = runSpeed;
@@ -81,6 +89,16 @@ public class CharacterMovement : MonoBehaviour
             speed = walkSpeed;
             analyticsManager.RecordSprinting();
         }
+=======
+        bool isMoving = moveDirection.magnitude > 0;
+        animator.SetBool("isMoving", isMoving);
+
+        bool isRunning = Input.GetKey(KeyCode.LeftShift) && isMoving;
+        animator.SetBool("isRunning", isRunning);
+
+        // Adjust speed based on running state
+        speed = isRunning ? runSpeed : walkSpeed;
+>>>>>>> Stashed changes
 
         Vector3 movement = transform.TransformDirection(moveDirection) * speed;
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
@@ -112,31 +130,29 @@ public class CharacterMovement : MonoBehaviour
         isGrounded = false;
     }
 
-    // Method to handle damage taken by player
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        healthBar.SetHealth(currentHealth, maxHealth);
 
-        if (healthBar != null)
+        if (currentHealth <= 0)
         {
-            healthBar.SetHealth(currentHealth, maxHealth);  // Update health bar
+            currentHealth = 0;
+            isDead = true;
+            levelManager?.ShowYouDiedScreen();
         }
-
-        Debug.Log("Player took " + damage + " damage. Current health: " + currentHealth);
     }
 
     public void ResetPlayer()
     {
         transform.position = startingPosition;
-        currentHealth = maxHealth;
+        currentHealth = startingHealth;
         isDead = false;
 
         if (healthBar != null)
         {
-            healthBar.SetMaxHealth(maxHealth);  // Reset health bar
+            healthBar.SetMaxHealth(currentHealth);
         }
-
         Debug.Log("Player reset to starting state");
     }
 }
