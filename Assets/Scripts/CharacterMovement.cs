@@ -7,7 +7,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 10f;
     [SerializeField] private float gravity = -9.81f;
-    [SerializeField] private int maxHealth = 10;
+    public int maxHealth = 10;
     public int currentHealth = 10;  // Player's current health
     public HealthBar healthBar;  // Reference to HealthBar script
 
@@ -26,15 +26,6 @@ public class CharacterMovement : MonoBehaviour
         currentHealth = maxHealth;
 
         // Ensure HealthBar is assigned and set max health
-        if (healthBar != null)
-        {
-            healthBar.SetMaxHealth(maxHealth);  // Initialize health bar to full
-        }
-        else
-        {
-            healthBar = FindObjectOfType<HealthBar>();
-            Debug.LogError("HealthBar assigned dynamically");
-        }
 
         startingPosition = transform.position;
         levelManager = FindObjectOfType<LevelManager>();
@@ -118,12 +109,7 @@ public class CharacterMovement : MonoBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        if (healthBar != null)
-        {
-            healthBar.SetHealth(currentHealth, maxHealth);  // Update health bar
-        }
-
-        Debug.Log("Player took " + damage + " damage. Current health: " + currentHealth);
+        Debug.Log("Player took " + damage + " damage. Current health: " + currentHealth + " max health: " + maxHealth);
     }
 
     public void ResetPlayer()
@@ -131,11 +117,6 @@ public class CharacterMovement : MonoBehaviour
         transform.position = startingPosition;
         currentHealth = maxHealth;
         isDead = false;
-
-        if (healthBar != null)
-        {
-            healthBar.SetMaxHealth(maxHealth);  // Reset health bar
-        }
 
         Debug.Log("Player reset to starting state");
     }
