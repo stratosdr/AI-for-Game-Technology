@@ -21,6 +21,7 @@ public class ArrowFollow : MonoBehaviour
             Vector3 direction = endPoint.position - transform.position;
             direction.y = 0;  // Keep the arrow horizontal
             transform.rotation = Quaternion.LookRotation(direction);
+            transform.rotation *= Quaternion.Euler(0,90,0);
         } else {
             GameObject p = GameObject.FindWithTag("Player");
             player = p.transform;
