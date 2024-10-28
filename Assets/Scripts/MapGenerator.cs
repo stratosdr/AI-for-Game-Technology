@@ -56,6 +56,7 @@ public class CellularLevelGenerator : MonoBehaviour
 	Dictionary<Vector2, ArrayList> segments;
 
 	private GameObject startCube;
+	private GameObject gloablPlayer;
 
 
 
@@ -192,6 +193,7 @@ public class CellularLevelGenerator : MonoBehaviour
 		Vector3 playerstart = startCube.transform.position;
 		//playerstart.y += (float)0.5;
 		GameObject player =  Instantiate(playerPrefab, playerstart, Quaternion.identity);
+		gloablPlayer = player;
 		CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
 
 		Destroy(startCube);
@@ -341,6 +343,16 @@ public class CellularLevelGenerator : MonoBehaviour
 			HilbertCurve(x + xi / 2, y + xj / 2, xi / 2, xj / 2, yi / 2, yj / 2, n - 1);
 			HilbertCurve(x + xi / 2 + yi / 2, y + xj / 2 + yj / 2, xi / 2, xj / 2, yi / 2, yj / 2, n - 1);
 			HilbertCurve(x + xi / 2 + yi, y + xj / 2 + yj, -yi / 2, -yj / 2, -xi / 2, -xj / 2, n - 1);
+		}
+	}
+
+	void CreateEnemies(){
+
+		for (int i = 0; i < enemyAmount; i++) {
+			Vector2Int enemyPosition;
+			enemyPosition = GenerateEnemySpawnPosition();
+			Vector3 enemySpawnPosition = new Vector3(enemyPosition.x, -0.25f, enemyPosition.y);
+			GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition, Quaternion.identity);
 		}
 	}
 
@@ -502,7 +514,7 @@ public class CellularLevelGenerator : MonoBehaviour
 
 
 
-		void CellularAutomata()
+	void CellularAutomata()
 	{
 		if (useRandomSeed)
 		{
@@ -523,17 +535,7 @@ public class CellularLevelGenerator : MonoBehaviour
 		RecoverEdgeCells();
 		generateColliders();
 
-		// Spawn player at a random non-wall location
-		//Vector2Int playerPosition = GetRandomPlayerStartPosition();
-		//Vector3 spawnPosition = new Vector3(playerPosition.x, 0.3f, playerPosition.y);
-		for (int i = 0; i < enemyAmount; i++) {
-			Vector2Int enemyPosition;
-			//do {
-			enemyPosition = GetRandomNonWallPosition();
-			//} while (Vector2.Distance(playerPosition, enemyPosition) < 10);
-			Vector3 enemySpawnPosition = new Vector3(enemyPosition.x, -0.25f, enemyPosition.y);
-			GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition, Quaternion.identity);
-		}
+		CreateEnemies();
 
 		//GameObject player = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
 		//CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
@@ -809,7 +811,7 @@ public class CellularLevelGenerator : MonoBehaviour
 		}
 	}
 
-Vector2Int GetRandomNonWallPosition()
+Vector2Int GenerateEnemySpawnPosition()
 {
     List<Vector2Int> nonWallPositions = new List<Vector2Int>();
 
@@ -819,7 +821,11 @@ Vector2Int GetRandomNonWallPosition()
         {
             if (generatedMap[x, y] == 1) // 1 indicates a walkable area
             {
-                nonWallPositions.Add(new Vector2Int(x, y));
+				float distance = Vector2.Distance(new Vector2(gloablPlayer.transform.position.x, gloablPlayer.transform.position.z), new Vector2(x,y));
+				Debug.Log(distance);
+				if(distance > 35){
+                	nonWallPositions.Add(new Vector2Int(x, y));
+				}
             }
         }
     }
