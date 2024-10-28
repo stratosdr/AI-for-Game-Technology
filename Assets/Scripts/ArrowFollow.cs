@@ -12,14 +12,15 @@ public class ArrowFollow : MonoBehaviour
     {
         if (player != null && endPoint != null)
         {
-            // Keep the arrow above the player
-            Vector3 playerPosition = player.position;
-            playerPosition.y += heightOffset;  // Set the height offset above the player
-            transform.position = playerPosition;
+            Vector3 direction = endPoint.position - player.position;
+            // direction.y = 0; 
 
-            // Point the arrow towards the endpoint
-            Vector3 direction = endPoint.position - transform.position;
-            direction.y = 0;  // Keep the arrow horizontal
+            float arrowDistance = .4f;  
+            Vector3 offset = direction.normalized * arrowDistance;
+            
+            // Place the arrow relative to the player position
+            transform.position = player.position + offset;
+
             transform.rotation = Quaternion.LookRotation(direction);
             transform.rotation *= Quaternion.Euler(0,90,0);
         } else {
