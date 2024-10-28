@@ -179,4 +179,7 @@ MonoBehaviour:
   gravity: -9.81
   maxHealth: 5
   currentHealth: 5
+  maxstamina: 100
+  stamina: 100
   healthBar: {fileID: 2314020452297973363, guid: 04030b58317103b41829fa171f01d52d, type: 3}
+  staminabar: {fileID: 7870489474063867057, guid: 001462917f9523343bdac66789793812, type: 3}

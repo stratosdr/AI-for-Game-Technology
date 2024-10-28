@@ -9,7 +9,10 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
     public int maxHealth = 10;
     public int currentHealth = 10;  // Player's current health
+    public float maxstamina = 100;  
+    public float stamina = 100;  
     public HealthBar healthBar;  // Reference to HealthBar script
+    public StaminaBar staminabar; 
 
     private Vector3 startingPosition;
     private float speed;
@@ -56,6 +59,21 @@ public class CharacterMovement : MonoBehaviour
         HandleMovement();
     }
 
+    void FixedUpdate()
+    {
+        if(speed == runSpeed) stamina-=1;
+            // Gradual stamina recovery if walking and stamina is less than max
+    if (speed == walkSpeed && stamina < maxstamina) 
+    {
+        float recoveryRatio = (float)stamina / maxstamina; // Ratio between 0 and 1
+        float recoveryRate = Mathf.SmoothStep(0.2f, 2, recoveryRatio); // Ease function
+        stamina += recoveryRate; // Apply recovery based on smoothstep
+    }
+
+    // Clamp stamina to max value
+    stamina = Mathf.Clamp(stamina, 0, maxstamina);
+    }
+
     void HandleMovement()
     {
         float horizontal = Input.GetAxis("Horizontal");
@@ -64,14 +82,17 @@ public class CharacterMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            speed = runSpeed;
-            analyticsManager.RecordWalking();
+            if(stamina > 5){
+                speed = runSpeed;
+                analyticsManager.RecordSprinting();
+            }
         }
-        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        else if (Input.GetKeyUp(KeyCode.LeftShift) || stamina < 1)
         {
             speed = walkSpeed;
-            analyticsManager.RecordSprinting();
+            analyticsManager.RecordWalking();
         }
+
 
         Vector3 movement = transform.TransformDirection(moveDirection) * speed;
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
