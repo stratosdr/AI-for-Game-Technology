@@ -30,7 +30,6 @@ public class HealthBar : MonoBehaviour
 
                 // Update the fill amount and color of the health bar
                 float healthPercentage = (float) playerHealth / playermHealth;
-                healthBarFill.fillAmount = healthPercentage;
                 healthBarFill.color = Color.Lerp(zeroHealthColor, fullHealthColor, healthPercentage);
 
                 // Adjust the scale to make it shrink from the center
