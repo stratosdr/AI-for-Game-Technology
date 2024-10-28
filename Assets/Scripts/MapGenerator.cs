@@ -168,7 +168,6 @@ public class CellularLevelGenerator : MonoBehaviour
 		Vector2 end = new Vector2(((CurvePoint)curvePoints[0]).x, ((CurvePoint)curvePoints[0]).y);
 
 		for (int i = 0; i < curvePoints.Count; i++){
-			Debug.Log(curvePoints[i]);
 			CurvePoint cPoint = (CurvePoint)curvePoints[i];
 
 			if (hilbertPointsInt[cPoint.x, cPoint.y] != 1) continue;
@@ -182,8 +181,6 @@ public class CellularLevelGenerator : MonoBehaviour
 				end.y = cPoint.y;
 			}
 		}
-		Debug.Log(start);
-		Debug.Log(end);
 
 		startCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		startCube.transform.position = new Vector3(start.x, 0, start.y);
@@ -822,7 +819,6 @@ Vector2Int GenerateEnemySpawnPosition()
             if (generatedMap[x, y] == 1) // 1 indicates a walkable area
             {
 				float distance = Vector2.Distance(new Vector2(gloablPlayer.transform.position.x, gloablPlayer.transform.position.z), new Vector2(x,y));
-				Debug.Log(distance);
 				if(distance > 35){
                 	nonWallPositions.Add(new Vector2Int(x, y));
 				}
