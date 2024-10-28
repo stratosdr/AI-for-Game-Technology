@@ -15,6 +15,7 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         // Ensure the main menu is active at the start and gameplay UI is hidden
+        Time.timeScale = 0f;
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
         if (gameplayUI != null) gameplayUI.SetActive(false);
         if (youDiedPanel != null) youDiedPanel.SetActive(false);
