@@ -23,11 +23,13 @@ public class CellularLevelGenerator : MonoBehaviour
     public int height;
 
 	public int enemyAmount = 20;
+	public int bombAmount = 30;
 
 	public GameObject floorPrefab;
 	public GameObject arrowPrefab;
 	public GameObject playerPrefab;
 	public GameObject enemyPrefab;
+	public GameObject bombPrefab;
 	public GameObject endpointPrefab;
 
     public string seed;
@@ -349,8 +351,9 @@ public class CellularLevelGenerator : MonoBehaviour
 			Vector2Int enemyPosition;
 			enemyPosition = GenerateEnemySpawnPosition();
 			Vector3 enemySpawnPosition = new Vector3(enemyPosition.x, -0.25f, enemyPosition.y);
-			GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition, Quaternion.identity);
+			Instantiate(enemyPrefab, enemySpawnPosition, Quaternion.identity);
 		}
+		generateBombs();
 	}
 
 
@@ -921,4 +924,43 @@ public bool drawMap, drawHilbert, drawHilbertNeg, drawhilPoint, drawCurvepoint, 
 			}
 		}
     }
+
+	void generateBombs(){
+    List<Vector3> bombPositions = new List<Vector3>();
+    int attempts = 0;
+
+    for (int i = 0; i < bombAmount; i++) {
+        Vector2Int enemyPosition;
+        Vector3 enemySpawnPosition;
+
+        bool positionFound = false;
+
+        while (!positionFound && attempts < 100) {
+            enemyPosition = GenerateEnemySpawnPosition();
+            enemySpawnPosition = new Vector3(enemyPosition.x, -0.25f, enemyPosition.y);
+
+            bool isFarEnough = true;
+
+            foreach (Vector3 bombPos in bombPositions) {
+                if (Vector3.Distance(bombPos, enemySpawnPosition) < 5f) {
+                    isFarEnough = false;
+                    break;
+                }
+            }
+
+            if (isFarEnough) {
+                bombPositions.Add(enemySpawnPosition);
+                Instantiate(bombPrefab, enemySpawnPosition, Quaternion.identity);
+                positionFound = true;
+            } else {
+                attempts++;
+            }
+        }
+
+        if (attempts >= 100) {
+            Debug.LogWarning("Too many attempts to find a suitable bomb position.");
+            attempts = 0; 
+        }
+    }
+}
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;  // For Image handling
+using System.Collections; 
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class CharacterMovement : MonoBehaviour
     private bool isDead = false;
     private LevelManager levelManager;
     private AnalyticsManager analyticsManager;
+    private bool canMove = true;  // Movement control flag
 
     void Start()
     {
@@ -46,7 +48,7 @@ public class CharacterMovement : MonoBehaviour
 
     void Update()
     {
-        if (isDead) return;
+        if (isDead || !canMove) return;
 
         if (currentHealth <= 0)
         {
@@ -131,6 +133,20 @@ public class CharacterMovement : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         Debug.Log("Player took " + damage + " damage. Current health: " + currentHealth + " max health: " + maxHealth);
+    }
+
+    public void KnockBack(Vector3 origin, float knockbackForce, float knockbackConcusionTime)
+    {
+        Vector3 knockbackDirection = (transform.position - origin).normalized;
+        rb.AddForce(knockbackDirection * knockbackForce, ForceMode.Impulse);
+        StartCoroutine(KnockbackCooldown(knockbackConcusionTime));
+    }
+
+    private IEnumerator KnockbackCooldown(float knockbackConcusionTime)
+    {
+        canMove = false;
+        yield return new WaitForSeconds(knockbackConcusionTime);
+        canMove = true;
     }
 
     public void ResetPlayer()
