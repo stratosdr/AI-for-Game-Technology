@@ -31,11 +31,19 @@ public class SessionData
     public float averageLevelTime; // level time per restart
     public float timeSprinting;  // time spent sprinting
     public float timeWalking;  // time spent walking
-    public int damageTaken;  // total  damage taken
-    public float averageDamageTaken;  // damage taken per restart
+    public int damageTakenNormal;  // total  damage taken
+    public int damageTakenBomb;  // total  damage taken
+    public int damageTakenBullet;  // total  damage taken
+    public float averageDamageTakenNormal;  // damage taken per restart
+    public float averageDamageTakenBomb;  // damage taken per restart
+    public float averageDamageTakenBullet;  // damage taken per restart
+    public int enemyJumpsMissed;
+    public int enemyBulletsMissed;
+    public int enemyBombsMissed;
     public int timesPaused;  // times paused
     public float detectionTime;  // time spent in enemy detection zone
     public int collisions;  // amount of collisions
+    public int bombsIgnited;  // amount of collisions
 
     public SessionData()
     {   
@@ -46,11 +54,19 @@ public class SessionData
         averageLevelTime = 0f;
         timeSprinting = 0f;
         timeWalking = 0f;
-        damageTaken = 0;
-        averageDamageTaken = 0f;
+        damageTakenNormal = 0;
+        damageTakenBomb = 0;
+        damageTakenBullet = 0;
+        averageDamageTakenNormal = 0f;
+        averageDamageTakenBomb = 0f;
+        averageDamageTakenBullet = 0f;
+        enemyJumpsMissed = 0;
+        enemyBulletsMissed = 0;
+        enemyBombsMissed = 0;
         timesPaused = 0;
         detectionTime = 0f;
         collisions = 0;
+        bombsIgnited = 0;
     }
 }
 
@@ -94,7 +110,9 @@ public class AnalyticsManager : MonoBehaviour
         currentSessionData.levelTime = Time.time - levelStartTime;
         currentSessionData.levelComplete = levelComplete;
         currentSessionData.averageLevelTime = (currentSessionData.levelTime / (currentSessionData.timesRestarted + 1));
-        currentSessionData.averageDamageTaken = (currentSessionData.damageTaken / (currentSessionData.timesRestarted + 1));
+        currentSessionData.averageDamageTakenNormal = (currentSessionData.damageTakenNormal / (currentSessionData.timesRestarted + 1));
+        currentSessionData.averageDamageTakenBomb = (currentSessionData.damageTakenBomb / (currentSessionData.timesRestarted + 1));
+        currentSessionData.averageDamageTakenBullet = (currentSessionData.damageTakenBullet / (currentSessionData.timesRestarted + 1));
         if (isSprinting) RecordSprinting();
         else RecordWalking();
         playerAnalytics.sessions.Add(currentSessionData);
@@ -125,10 +143,35 @@ public class AnalyticsManager : MonoBehaviour
         isSprinting = true;
     }
 
-    public void RecordDamage(int damage)
+    public void RecordNormalDamage(int damage)
     {
-        currentSessionData.damageTaken += damage;
+        currentSessionData.damageTakenNormal += damage;
     }
+
+    public void RecordBombDamage(int damage){
+        currentSessionData.damageTakenBomb += damage;
+    }
+
+    public void RecordBulletDamage(int damage){
+        currentSessionData.damageTakenBullet += damage;
+    }
+
+    public void RecordBombIgnition(){
+        currentSessionData.bombsIgnited += 1;
+    }
+
+    public void RecordBombMissed(){
+        currentSessionData.bombsIgnited += 1;
+    }
+
+    public void RecordJumpMissed(){
+        currentSessionData.enemyBombsMissed += 1;
+    }
+    
+    public void RecordBulletMissed(){
+        currentSessionData.enemyBulletsMissed += 1;
+    }
+
 
     public void RecordPause()
     {

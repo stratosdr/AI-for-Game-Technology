@@ -103,7 +103,7 @@ public class EnemyBehavior : MonoBehaviour
                 // Call LevelManager to show the game over screen if the player dies
                 */
                 playerMovement.TakeDamage(1);
-                analyticsManager.RecordDamage(1);
+                analyticsManager.RecordNormalDamage(1);
                 if (playerMovement.currentHealth <= 0 && levelManager != null)
                 {
                     levelManager.ShowYouDiedScreen();  // Directly call ShowYouDiedScreen instead of using SendMessage
@@ -185,6 +185,7 @@ public class EnemyBehavior : MonoBehaviour
 
         isJumping = false;
         isOnCooldown = false;
+        analyticsManager.RecordJumpMissed();
     }
 
 

@@ -28,14 +28,8 @@ public class ProjectileScript : MonoBehaviour
         //Destroy(gameObject, 5f);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-
-        void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
@@ -45,7 +39,7 @@ public class ProjectileScript : MonoBehaviour
 
                 playerMovement.TakeDamage(1);
                 if (analyticsManager != null) {
-                    analyticsManager.RecordDamage(1);
+                    analyticsManager.RecordBulletDamage(1);
 
                 }
                 if (playerMovement.currentHealth <= 0 && levelManager != null)
@@ -55,6 +49,8 @@ public class ProjectileScript : MonoBehaviour
 
 
             }
+        } else{
+            analyticsManager.RecordBulletMissed();
         }
         Destroy(gameObject);
 

@@ -15,6 +15,9 @@ public class BombBehaviour : MonoBehaviour
 
     private float detonationTimer = 0f;
 
+    private AnalyticsManager analyticsManager;
+
+
     void Start()
     {
         // Ensure the radius display is initially hidden
@@ -23,6 +26,7 @@ public class BombBehaviour : MonoBehaviour
             radiusVisualizer.SetActive(false);
             radiusVisualizer.transform.localScale = new Vector3(radius*4, 0.0001f, radius*4);
         }
+        analyticsManager = FindObjectOfType<AnalyticsManager>();
     }
 
 
@@ -51,6 +55,7 @@ public class BombBehaviour : MonoBehaviour
             state = detonating;
             detonationTimer = 0f;
             Debug.Log("I'm starting to detonate!");
+            analyticsManager.RecordBombIgnition();
         }
         else if (state == detonating)
         {
@@ -68,7 +73,7 @@ public class BombBehaviour : MonoBehaviour
     {
         GameObject player = GameObject.FindWithTag("Player");
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
-        if (distanceToPlayer > radius) return;
+        if (distanceToPlayer > radius) {analyticsManager.RecordBombMissed(); return;}
 
         // Hide the radius display just before detonating
         if (radiusVisualizer != null)
@@ -80,6 +85,8 @@ public class BombBehaviour : MonoBehaviour
         playerScript.TakeDamage(1);
         playerScript.KnockBack(transform.position, explosionPower, knockbackConcusionTime);
         Debug.Log("Bomb detonated!");
+        analyticsManager.RecordBombDamage(1);
+
     }
 
 

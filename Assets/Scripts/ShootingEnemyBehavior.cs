@@ -8,6 +8,7 @@ public class ShootingEnemyBehavior : MonoBehaviour
     public GameObject projectilePrefab;
     public float projectileSpeed = 10f;
     public float shootingInterval = 2f;
+    private AnalyticsManager analyticsManager;
 
     private Transform player;
     private bool isShooting = false;
