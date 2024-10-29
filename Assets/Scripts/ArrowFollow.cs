@@ -7,6 +7,7 @@ public class ArrowFollow : MonoBehaviour
     public Transform player;       // Reference to the player
     public Transform endPoint;     // Reference to the endpoint
     public float heightOffset = 2f; // Height above the player
+    public float arrowDistance = .4f;
 
     void Update()
     {
@@ -15,7 +16,6 @@ public class ArrowFollow : MonoBehaviour
             Vector3 direction = endPoint.position - player.position;
             // direction.y = 0; 
 
-            float arrowDistance = .4f;  
             Vector3 offset = direction.normalized * arrowDistance;
             
             // Place the arrow relative to the player position
