@@ -9,6 +9,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: c9c47b533c2b0444aa5ea03c2920f4cf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: c9c47b533c2b0444aa5ea03c2920f4cf, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: c9c47b533c2b0444aa5ea03c2920f4cf, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: c9c47b533c2b0444aa5ea03c2920f4cf, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
       objectReference: {fileID: 0}
@@ -80,3 +92,4 @@ MonoBehaviour:
   player: {fileID: 0}
   endPoint: {fileID: 0}
   heightOffset: 1.25
+  arrowDistance: 1
