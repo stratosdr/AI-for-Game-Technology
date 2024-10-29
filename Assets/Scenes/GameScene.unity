@@ -2397,12 +2397,14 @@ MonoBehaviour:
   width: 200
   height: 100
   enemyAmount: 20
+  bombAmount: 30
   shootEnemyAmount: 5
   floorPrefab: {fileID: 7926375138572646288, guid: 5e2ab5e1133c5824ca008eac81a640ec, type: 3}
   arrowPrefab: {fileID: 3625874196646418539, guid: 4ffbbe45ecac497458cf940eb25fd8fe, type: 3}
   playerPrefab: {fileID: 4672066574419436370, guid: 5593013f9cab340489f544b3e09cc70b, type: 3}
   enemyPrefab: {fileID: 5063787519223793298, guid: 7f6daa98a708485479715d3a80f90a1a, type: 3}
   shootEnemyPrefab: {fileID: 126345388662610137, guid: a1ace1f05b148ff41928a262c8b4907c, type: 3}
+  bombPrefab: {fileID: 0}
   endpointPrefab: {fileID: 4061011525154752201, guid: c0d4d79711334504f8ed8c977e739ae4, type: 3}
   seed: 
   useRandomSeed: 1
@@ -2673,6 +2675,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f66d62f827cb73044a7c95c92eda3ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  staminaBarFill: {fileID: 1706805970}
 --- !u!1 &1763053314
 GameObject:
   m_ObjectHideFlags: 0
@@ -3121,6 +3124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f66d62f827cb73044a7c95c92eda3ad5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  staminaBarFill: {fileID: 0}
 --- !u!1 &1976237415
 GameObject:
   m_ObjectHideFlags: 0
