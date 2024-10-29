@@ -23,11 +23,13 @@ public class CellularLevelGenerator : MonoBehaviour
     public int height;
 
 	public int enemyAmount = 20;
+	public int shootEnemyAmount = 5;
 
 	public GameObject floorPrefab;
 	public GameObject arrowPrefab;
 	public GameObject playerPrefab;
 	public GameObject enemyPrefab;
+	public GameObject shootEnemyPrefab;
 	public GameObject endpointPrefab;
 
     public string seed;
@@ -350,6 +352,12 @@ public class CellularLevelGenerator : MonoBehaviour
 			enemyPosition = GenerateEnemySpawnPosition();
 			Vector3 enemySpawnPosition = new Vector3(enemyPosition.x, -0.25f, enemyPosition.y);
 			GameObject enemy = Instantiate(enemyPrefab, enemySpawnPosition, Quaternion.identity);
+		}
+		for (int i = 0; i < shootEnemyAmount; i++) {
+			Vector2Int enemyPosition;
+			enemyPosition = GenerateEnemySpawnPosition();
+			Vector3 enemySpawnPosition = new Vector3(enemyPosition.x, -0.25f, enemyPosition.y);
+			GameObject shootEnemy = Instantiate(shootEnemyPrefab, enemySpawnPosition, Quaternion.identity);
 		}
 	}
 

@@ -118,6 +118,7 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
+
     private void OnCollisionExit(Collision collision)
     {
         analyticsManager.RecordCollision();
