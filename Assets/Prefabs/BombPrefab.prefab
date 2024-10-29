@@ -206,4 +206,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 3
   detonationSpeed: 2
+  knockbackConcusionTime: 1
+  explosionPower: 50
   radiusVisualizer: {fileID: 1847816985094909462}

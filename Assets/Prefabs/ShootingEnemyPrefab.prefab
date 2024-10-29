@@ -98,5 +98,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootingRadius: 10
   projectilePrefab: {fileID: 4868983348171871755, guid: 30f8ef087317211478101649bbaa58db, type: 3}
-  projectileSpeed: 10
+  projectileSpeed: 20
   shootingInterval: 2

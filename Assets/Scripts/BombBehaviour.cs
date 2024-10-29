@@ -6,6 +6,7 @@ public class BombBehaviour : MonoBehaviour
     public float radius = 3f;
     public float detonationSpeed = 2f;
     public float knockbackConcusionTime = 1f;
+    public float explosionPower = 10f;
     public GameObject radiusVisualizer; // Reference to the radius display GameObject
 
     private static int idle = 0;
@@ -77,7 +78,7 @@ public class BombBehaviour : MonoBehaviour
 
         CharacterMovement playerScript = player.GetComponent<CharacterMovement>();
         playerScript.TakeDamage(1);
-        playerScript.KnockBack(transform.position, 10, knockbackConcusionTime);
+        playerScript.KnockBack(transform.position, explosionPower, knockbackConcusionTime);
         Debug.Log("Bomb detonated!");
     }
 
