@@ -66,8 +66,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.033462074, y: 0.028218364, z: 0.0109567}
-  m_Center: {x: -0.0004033649, y: 0.01189919, z: -0.00011549502}
+  m_Size: {x: 0.009760356, y: 0.04, z: 0.008381579}
+  m_Center: {x: -0.000033934415, y: 0.012495992, z: 0.000299139}
 --- !u!54 &8308173749397718870
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -144,6 +144,7 @@ MonoBehaviour:
   healthBar: {fileID: 2314020452297973363, guid: 04030b58317103b41829fa171f01d52d, type: 3}
   staminaBar: {fileID: 0}
   animator: {fileID: 9030319819603436915}
+  smoothTime: 2000
   audioSource: {fileID: 1623954316632235062}
   explosionAudio: {fileID: 8300000, guid: f3b433cfe0a83924283e660154b4b08f, type: 3}
   projectileImpactAudio: {fileID: 8300000, guid: 15d5818f0f6c56a48b8c1ccd36fed148, type: 3}

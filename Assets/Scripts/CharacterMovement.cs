@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.Scripting.APIUpdating;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class CharacterMovement : MonoBehaviour
     private AnalyticsManager analyticsManager;
     private bool canMove = true;  // Movement control flag
     public Animator animator;
+    public float smoothTime = 1000f;
+    private Transform model_transform;
 
 
     public AudioSource audioSource;
@@ -45,6 +48,10 @@ public class CharacterMovement : MonoBehaviour
         startingPosition = transform.position;
         levelManager = FindObjectOfType<LevelManager>();
         analyticsManager = FindObjectOfType<AnalyticsManager>();
+        model_transform = transform.Find("Player1");
+        if (model_transform == null) {
+            Debug.Log("Model_transform not found!");
+        }
 
         if (levelManager == null)
         {
@@ -73,6 +80,7 @@ public class CharacterMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        //HandleMovement();
         if (speed == runSpeed)
         {
             stamina -= 1;
@@ -96,8 +104,11 @@ public class CharacterMovement : MonoBehaviour
         float vertical = Input.GetAxis("Vertical");
         Vector3 moveDirection = new Vector3(horizontal, 0f, vertical).normalized;
 
+        //float movementThreshold = 0.001f; // Adjust this value as needed
+
         // Set isWalking based on WASD keys input
         bool isMoving = moveDirection.magnitude > 0;
+        //Debug.Log(isMoving);
         animator.SetBool("isWalking", isMoving);
 
         if (isMoving)
@@ -139,6 +150,12 @@ public class CharacterMovement : MonoBehaviour
         // Apply movement to Rigidbody
         Vector3 movement = transform.TransformDirection(moveDirection) * speed;
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
+        
+        // Apply rotation to Rigidbody
+        float targetAngle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg;
+        float smoothAngle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, smoothTime * Time.deltaTime);
+        Quaternion rotation = Quaternion.Euler(0, smoothAngle, 0);
+        model_transform.rotation = rotation;
 
         // Gravity application
         if (isGrounded && rb.velocity.y <= 0)
