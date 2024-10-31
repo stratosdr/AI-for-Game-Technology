@@ -5,7 +5,6 @@ public class StaminaBar : MonoBehaviour
 {
     public Image staminaBarFill;  // This should reference the Image component in Fill mode.
     private RectTransform staminaBarRectTransform;
-    
 
     void Start()
     {
@@ -13,9 +12,9 @@ public class StaminaBar : MonoBehaviour
     }
 
     void FixedUpdate()
-    {   
+    {
         GameObject player = GameObject.FindWithTag("Player");
-        
+
         if (player != null)
         {
             // Get the CharacterMovement component attached to this player GameObject
@@ -23,11 +22,11 @@ public class StaminaBar : MonoBehaviour
             if (playerScript != null)
             {
                 // Access the 'stamina' variables from CharacterMovement
-                float playerstamina = playerScript.stamina;
-                float playermstamina = playerScript.maxstamina;
+                float playerStamina = playerScript.stamina;
+                float playerMaxStamina = playerScript.maxStamina;
 
                 // Update the fill amount and color of the stamina bar
-                float staminaPercentage = (float) playerstamina / playermstamina;
+                float staminaPercentage = playerStamina / playerMaxStamina;
 
                 // Adjust the scale to make it shrink from the center
                 staminaBarRectTransform.localScale = new Vector3(staminaPercentage, 1f, 1f);
