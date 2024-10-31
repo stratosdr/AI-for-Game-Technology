@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class ShootingEnemyBehavior : MonoBehaviour
@@ -13,12 +14,17 @@ public class ShootingEnemyBehavior : MonoBehaviour
     private Transform player;
     private bool isShooting = false;
 
+    private Transform model_transform;
+
+    public float smoothTime = 1000f;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         if(player == null) {
             Debug.LogError("Player not found! Make sure the player has the 'Player' tag.");
         }
+        model_transform = transform.Find("Cannon");
 
         StartCoroutine(ShootAtPlayer());
     }
@@ -30,6 +36,11 @@ public class ShootingEnemyBehavior : MonoBehaviour
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
             if (distanceToPlayer <= shootingRadius) {
                 isShooting = true;
+                Vector3 direction = (player.position - transform.position).normalized;
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+                float smoothAngle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, smoothTime * Time.deltaTime);
+                Quaternion rotation = Quaternion.Euler(-90, smoothAngle + 90, 0);
+                model_transform.rotation = rotation;
             } else {
                 isShooting = false;
             }
