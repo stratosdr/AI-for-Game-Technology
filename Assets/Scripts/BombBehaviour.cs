@@ -11,15 +11,21 @@ public class BombBehaviour : MonoBehaviour
 
     private static int idle = 0;
     private static int detonating = 1;
+    private static int detonated = 2;
     private int state = idle;
 
     private float detonationTimer = 0f;
 
     private AnalyticsManager analyticsManager;
 
+    public AudioSource audioSource;
+    public AudioClip fuzeAudio;
+
 
     void Start()
     {
+        
+
         // Ensure the radius display is initially hidden
         if (radiusVisualizer != null)
         {
@@ -55,6 +61,8 @@ public class BombBehaviour : MonoBehaviour
             state = detonating;
             detonationTimer = 0f;
             Debug.Log("I'm starting to detonate!");
+            if(!audioSource.isPlaying) audioSource.PlayOneShot(fuzeAudio);
+
             analyticsManager.RecordBombIgnition();
         }
         else if (state == detonating)
@@ -64,6 +72,8 @@ public class BombBehaviour : MonoBehaviour
             if (detonationTimer >= detonationSpeed)
             {
                 Detonate();
+                state = detonated;
+
                 Destroy(gameObject);
             }
         }
@@ -72,6 +82,9 @@ public class BombBehaviour : MonoBehaviour
     void Detonate()
     {
         GameObject player = GameObject.FindWithTag("Player");
+
+        CharacterMovement playerScript = player.GetComponent<CharacterMovement>();
+        playerScript.playBombExplosion();
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
         if (distanceToPlayer > radius) {analyticsManager.RecordBombMissed(); return;}
 
@@ -81,11 +94,15 @@ public class BombBehaviour : MonoBehaviour
             radiusVisualizer.SetActive(false);
         }
 
-        CharacterMovement playerScript = player.GetComponent<CharacterMovement>();
         playerScript.TakeDamage(1);
         playerScript.KnockBack(transform.position, explosionPower, knockbackConcusionTime);
         Debug.Log("Bomb detonated!");
         analyticsManager.RecordBombDamage(1);
+
+        Renderer renderer  = GetComponent<Renderer>();
+        renderer.enabled = false;
+
+        Debug.Log(renderer.enabled);
 
     }
 

@@ -65,6 +65,9 @@ public class LevelManager : MonoBehaviour
     // Method to show the You Died screen and hide the pause button
     public void ShowYouDiedScreen()
     {
+        GameObject player = GameObject.FindWithTag("Player");
+        CharacterMovement playerScript = player.GetComponent<CharacterMovement>();
+        playerScript.playGameOverAudio();
         if (youDiedPanel != null)
         {
             youDiedPanel.SetActive(true);  // Display the You Died screen

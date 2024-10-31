@@ -38,6 +38,12 @@ public class ProjectileScript : MonoBehaviour
             {
 
                 playerMovement.TakeDamage(1);
+
+                GameObject player = GameObject.FindWithTag("Player");
+                CharacterMovement playerScript = player.GetComponent<CharacterMovement>();
+                playerScript.playProjectileImpact();
+
+
                 if (analyticsManager != null) {
                     analyticsManager.RecordBulletDamage(1);
 

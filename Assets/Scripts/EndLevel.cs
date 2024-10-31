@@ -14,7 +14,13 @@ public class EndLevel : MonoBehaviour
         if (other.CompareTag("Player")) 
         {
             analyticsManager.EndSession(true, true); // End session on level completion
+
+            GameObject player = GameObject.FindWithTag("Player");
+            CharacterMovement playerScript = player.GetComponent<CharacterMovement>();
+            playerScript.playWinAudio();
+
             ShowGameEndScreen();
+
         }
     }
 

@@ -24,6 +24,17 @@ public class CharacterMovement : MonoBehaviour
     private bool canMove = true;  // Movement control flag
     public Animator animator;
 
+
+    public AudioSource audioSource;
+    public AudioClip explosionAudio;
+    public AudioClip projectileImpactAudio;
+    public AudioClip winAudio;
+    public AudioClip gameoverAudio;
+    public AudioClip[] walkAudios; 
+    private float stepCooldown = 0.34f; 
+    private float stepRunCooldown = 0.2f; 
+    private float nextStepTime = 0f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -96,11 +107,20 @@ public class CharacterMovement : MonoBehaviour
                 speed = runSpeed;
                 animator.SetBool("isRunning", true);
                 stamina -= Time.deltaTime * 10; // Decrease stamina when running
+                if (Time.time >= nextStepTime) {
+                    PlayWalkAudio();
+                    nextStepTime = Time.time + stepRunCooldown; // Update the next step time
+                }
             }
             else
             {
                 speed = walkSpeed;
                 animator.SetBool("isRunning", false);
+
+                if (Time.time >= nextStepTime) {
+                    PlayWalkAudio();
+                    nextStepTime = Time.time + stepCooldown; // Update the next step time
+                }
             }
         }
         else
@@ -178,5 +198,46 @@ public class CharacterMovement : MonoBehaviour
         isDead = false;
 
         Debug.Log("Player reset to starting state");
+    }
+
+
+    public void playWinAudio(){
+        audioSource.PlayOneShot(winAudio);
+    }
+
+    public void playGameOverAudio(){
+        audioSource.PlayOneShot(gameoverAudio);
+    }
+
+
+    public void playBombExplosion(){
+        audioSource.PlayOneShot(explosionAudio);
+    }
+
+    public void playProjectileImpact(){
+        StartCoroutine(PlayAudioSegment(projectileImpactAudio, 0f, 0.4f));
+    }
+
+    private void PlayWalkAudio(){
+        // Select a random audio clip from the walk audio array
+        AudioClip selectedClip = walkAudios[Random.Range(0, walkAudios.Length)];
+        audioSource.PlayOneShot(selectedClip);
+    }
+
+
+
+    private IEnumerator PlayAudioSegment(AudioClip clip, float startTime, float duration)
+    {
+
+        if (audioSource != null && clip != null)
+        {
+            audioSource.clip = clip;        
+            audioSource.time = startTime;   
+            audioSource.Play();             
+
+            yield return new WaitForSeconds(duration);
+
+            audioSource.Stop();             
+        }
     }
 }

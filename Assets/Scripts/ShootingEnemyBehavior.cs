@@ -13,6 +13,9 @@ public class ShootingEnemyBehavior : MonoBehaviour
     private Transform player;
     private bool isShooting = false;
 
+    public AudioSource audioSource;
+    public AudioClip gunshotAudio;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -48,6 +51,7 @@ public class ShootingEnemyBehavior : MonoBehaviour
                 }
 
                 //Destroy(projectile, 5f);
+                audioSource.PlayOneShot(gunshotAudio);
                 yield return new WaitForSeconds(shootingInterval);
             } else {
                 yield return null;
