@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 8308173749397718870}
   - component: {fileID: 4975330007608517470}
   - component: {fileID: 4844000508615032785}
+  - component: {fileID: 9030319819603436915}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerPrefab
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -141,6 +142,28 @@ MonoBehaviour:
   stamina: 100
   healthBar: {fileID: 2314020452297973363, guid: 04030b58317103b41829fa171f01d52d, type: 3}
   staminabar: {fileID: 7870489474063867057, guid: 001462917f9523343bdac66789793812, type: 3}
+  animator: {fileID: 9030319819603436915}
+--- !u!95 &9030319819603436915
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4672066574419436370}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: a64e241eeb677ec43834681f99942316, type: 3}
+  m_Controller: {fileID: 9100000, guid: cb08509bad114a64f926bb9021a90899, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &4691039097114490723
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,6 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;  // For Image handling
-using System.Collections; 
+using UnityEngine.UI;
+using System.Collections;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -10,10 +10,10 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
     public int maxHealth = 10;
     public int currentHealth = 10;  // Player's current health
-    public float maxstamina = 100;  
-    public float stamina = 100;  
+    public float maxStamina = 100;  // Renamed to maxStamina
+    public float stamina = 100;
     public HealthBar healthBar;  // Reference to HealthBar script
-    public StaminaBar staminabar; 
+    public StaminaBar staminaBar;
 
     private Vector3 startingPosition;
     private float speed;
@@ -22,6 +22,7 @@ public class CharacterMovement : MonoBehaviour
     private LevelManager levelManager;
     private AnalyticsManager analyticsManager;
     private bool canMove = true;  // Movement control flag
+    public Animator animator;
 
     void Start()
     {
@@ -29,8 +30,6 @@ public class CharacterMovement : MonoBehaviour
         rb.freezeRotation = true;
         speed = walkSpeed;
         currentHealth = maxHealth;
-
-        // Ensure HealthBar is assigned and set max health
 
         startingPosition = transform.position;
         levelManager = FindObjectOfType<LevelManager>();
@@ -55,7 +54,7 @@ public class CharacterMovement : MonoBehaviour
             isDead = true;
             analyticsManager.RecordDeath();
             levelManager?.ShowYouDiedScreen();  // Call the LevelManager to show YouDiedPanel
-           return;
+            return;
         }
 
         HandleMovement();
@@ -63,17 +62,21 @@ public class CharacterMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(speed == runSpeed) stamina-=1;
-            // Gradual stamina recovery if walking and stamina is less than max
-    if (speed == walkSpeed && stamina < maxstamina) 
-    {
-        float recoveryRatio = (float)stamina / maxstamina; // Ratio between 0 and 1
-        float recoveryRate = Mathf.SmoothStep(0.2f, 2, recoveryRatio); // Ease function
-        stamina += recoveryRate; // Apply recovery based on smoothstep
-    }
+        if (speed == runSpeed)
+        {
+            stamina -= 1;
+        }
 
-    // Clamp stamina to max value
-    stamina = Mathf.Clamp(stamina, 0, maxstamina);
+        // Gradual stamina recovery if walking and stamina is less than max
+        if (speed == walkSpeed && stamina < maxStamina)
+        {
+            float recoveryRatio = stamina / maxStamina; // Ratio between 0 and 1
+            float recoveryRate = Mathf.SmoothStep(0.2f, 2, recoveryRatio); // Ease function
+            stamina += recoveryRate; // Apply recovery based on smoothstep
+        }
+
+        // Clamp stamina to max value
+        stamina = Mathf.Clamp(stamina, 0, maxStamina);
     }
 
     void HandleMovement()
@@ -82,23 +85,42 @@ public class CharacterMovement : MonoBehaviour
         float vertical = Input.GetAxis("Vertical");
         Vector3 moveDirection = new Vector3(horizontal, 0f, vertical).normalized;
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        // Set isWalking based on WASD keys input
+        bool isMoving = moveDirection.magnitude > 0;
+        animator.SetBool("isWalking", isMoving);
+
+        if (isMoving)
         {
-            if(stamina > 5){
+            if (Input.GetKey(KeyCode.LeftShift) && stamina > 5)
+            {
                 speed = runSpeed;
-                analyticsManager.RecordSprinting();
+                animator.SetBool("isRunning", true);
+                stamina -= Time.deltaTime * 10; // Decrease stamina when running
+            }
+            else
+            {
+                speed = walkSpeed;
+                animator.SetBool("isRunning", false);
             }
         }
-        else if (Input.GetKeyUp(KeyCode.LeftShift) || stamina < 1)
+        else
         {
-            speed = walkSpeed;
-            analyticsManager.RecordWalking();
+            animator.SetBool("isRunning", false);
         }
 
+        // Stamina recovery if not running
+        if (!Input.GetKey(KeyCode.LeftShift) && stamina < maxStamina)
+        {
+            stamina += Time.deltaTime * 5;
+        }
 
+        stamina = Mathf.Clamp(stamina, 0, maxStamina);
+
+        // Apply movement to Rigidbody
         Vector3 movement = transform.TransformDirection(moveDirection) * speed;
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
 
+        // Gravity application
         if (isGrounded && rb.velocity.y <= 0)
         {
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -119,7 +141,6 @@ public class CharacterMovement : MonoBehaviour
             }
         }
     }
-
 
     private void OnCollisionExit(Collision collision)
     {
