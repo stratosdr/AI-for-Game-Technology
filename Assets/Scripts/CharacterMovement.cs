@@ -1,6 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+using UnityEngine.UI;  // For Image handling
+using System.Collections; 
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -9,20 +9,19 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float runSpeed = 10f;
     [SerializeField] private float gravity = -9.81f;
     public int maxHealth = 10;
-    public int currentHealth = 10;
-    public float maxStamina = 100;
-    public float stamina = 100;
-    public HealthBar healthBar;
-    public StaminaBar staminaBar;
+    public int currentHealth = 10;  // Player's current health
+    public float maxstamina = 100;  
+    public float stamina = 100;  
+    public HealthBar healthBar;  // Reference to HealthBar script
+    public StaminaBar staminabar; 
 
     private Vector3 startingPosition;
     private float speed;
     private bool isGrounded;
     private bool isDead = false;
-    private bool canMove = true;
     private LevelManager levelManager;
     private AnalyticsManager analyticsManager;
-    private Animator animator;
+    private bool canMove = true;  // Movement control flag
 
     void Start()
     {
@@ -30,15 +29,21 @@ public class CharacterMovement : MonoBehaviour
         rb.freezeRotation = true;
         speed = walkSpeed;
         currentHealth = maxHealth;
-        startingPosition = transform.position;
 
+        // Ensure HealthBar is assigned and set max health
+
+        startingPosition = transform.position;
         levelManager = FindObjectOfType<LevelManager>();
         analyticsManager = FindObjectOfType<AnalyticsManager>();
-        animator = GetComponent<Animator>();
 
-        if (levelManager == null) Debug.LogError("LevelManager not found in the scene!");
-        if (analyticsManager == null) Debug.LogError("AnalyticsManager not found in the scene!");
-        if (animator == null) Debug.LogError("Animator not found on character!");
+        if (levelManager == null)
+        {
+            Debug.LogError("LevelManager not found in the scene!");
+        }
+        if (analyticsManager == null)
+        {
+            Debug.LogError("AnalyticsManager not found in the scene!");
+        }
     }
 
     void Update()
@@ -48,9 +53,9 @@ public class CharacterMovement : MonoBehaviour
         if (currentHealth <= 0)
         {
             isDead = true;
-            analyticsManager?.RecordDeath();
-            levelManager?.ShowYouDiedScreen();
-            return;
+            analyticsManager.RecordDeath();
+            levelManager?.ShowYouDiedScreen();  // Call the LevelManager to show YouDiedPanel
+           return;
         }
 
         HandleMovement();
@@ -58,18 +63,17 @@ public class CharacterMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Reduce stamina when running
-        if (animator.GetBool("isRunning") && stamina > 0)
-        {
-            stamina -= Time.deltaTime * 10;
-        }
-        else if (stamina < maxStamina)
-        {
-            // Regenerate stamina when not running
-            stamina += Time.deltaTime * 5;
-        }
+        if(speed == runSpeed) stamina-=1;
+            // Gradual stamina recovery if walking and stamina is less than max
+    if (speed == walkSpeed && stamina < maxstamina) 
+    {
+        float recoveryRatio = (float)stamina / maxstamina; // Ratio between 0 and 1
+        float recoveryRate = Mathf.SmoothStep(0.2f, 2, recoveryRatio); // Ease function
+        stamina += recoveryRate; // Apply recovery based on smoothstep
+    }
 
-        stamina = Mathf.Clamp(stamina, 0, maxStamina);
+    // Clamp stamina to max value
+    stamina = Mathf.Clamp(stamina, 0, maxstamina);
     }
 
     void HandleMovement()
@@ -78,28 +82,23 @@ public class CharacterMovement : MonoBehaviour
         float vertical = Input.GetAxis("Vertical");
         Vector3 moveDirection = new Vector3(horizontal, 0f, vertical).normalized;
 
-        bool isMoving = moveDirection.magnitude > 0;
-
-        // Set isWalking based on WASD keys input
-        animator.SetBool("isWalking", isMoving);
-
-        // Check if Shift is pressed and stamina is sufficient for running
-        if (isMoving && Input.GetKey(KeyCode.LeftShift) && stamina > 5)
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            speed = runSpeed;
-            animator.SetBool("isRunning", true);
+            if(stamina > 5){
+                speed = runSpeed;
+                analyticsManager.RecordSprinting();
+            }
         }
-        else
+        else if (Input.GetKeyUp(KeyCode.LeftShift) || stamina < 1)
         {
             speed = walkSpeed;
-            animator.SetBool("isRunning", false);
+            analyticsManager.RecordWalking();
         }
 
-        // Apply movement to Rigidbody instantly based on input
+
         Vector3 movement = transform.TransformDirection(moveDirection) * speed;
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
 
-        // Apply gravity to the player
         if (isGrounded && rb.velocity.y <= 0)
         {
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
@@ -121,17 +120,20 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
+
     private void OnCollisionExit(Collision collision)
     {
+        analyticsManager.RecordCollision();
         isGrounded = false;
     }
 
+    // Method to handle damage taken by player
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        Debug.Log("Player took " + damage + " damage. Current health: " + currentHealth);
+        Debug.Log("Player took " + damage + " damage. Current health: " + currentHealth + " max health: " + maxHealth);
     }
 
     public void KnockBack(Vector3 origin, float knockbackForce, float knockbackConcusionTime)
