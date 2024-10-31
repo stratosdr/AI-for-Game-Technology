@@ -97,7 +97,7 @@ public class CharacterMovement : MonoBehaviour
 
         // Set isWalking based on WASD keys input
         bool isMoving = moveDirection.magnitude > 0;
-        Debug.Log(isMoving);
+        //Debug.Log(isMoving);
         animator.SetBool("isWalking", isMoving);
 
         if (isMoving)
