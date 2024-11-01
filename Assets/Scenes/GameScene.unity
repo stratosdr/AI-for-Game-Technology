@@ -3053,7 +3053,7 @@ MonoBehaviour:
   height: 100
   enemyAmount: 20
   bombAmount: 30
-  shootEnemyAmount: 5
+  shootEnemyAmount: 15
   floorPrefab: {fileID: 7926375138572646288, guid: 5e2ab5e1133c5824ca008eac81a640ec, type: 3}
   arrowPrefab: {fileID: 3625874196646418539, guid: 4ffbbe45ecac497458cf940eb25fd8fe, type: 3}
   playerPrefab: {fileID: 4672066574419436370, guid: 5593013f9cab340489f544b3e09cc70b, type: 3}
@@ -3061,7 +3061,7 @@ MonoBehaviour:
   shootEnemyPrefab: {fileID: 126345388662610137, guid: a1ace1f05b148ff41928a262c8b4907c, type: 3}
   bombPrefab: {fileID: 5063787519223793298, guid: fdc8321e552234949a8c445f7ee7d0ff, type: 3}
   endpointPrefab: {fileID: 4061011525154752201, guid: c0d4d79711334504f8ed8c977e739ae4, type: 3}
-  seed: 638660052567418284
+  seed: 
   useRandomSeed: 1
   fillingPercentage: 50
   hilbertReps: 3
