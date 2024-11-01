@@ -15,69 +15,47 @@ public class ShootingEnemyBehavior : MonoBehaviour
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        if (player == null)
-        {
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        if(player == null) {
             Debug.LogError("Player not found! Make sure the player has the 'Player' tag.");
         }
 
         StartCoroutine(ShootAtPlayer());
     }
 
+    // Update is called once per frame
     void Update()
     {
-        if (player != null)
-        {
+        if (player != null) {
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-            isShooting = distanceToPlayer <= shootingRadius;
-
-            if (isShooting)
-            {
-                FacePlayer();
+            if (distanceToPlayer <= shootingRadius) {
+                isShooting = true;
+            } else {
+                isShooting = false;
             }
         }
     }
 
-    private void FacePlayer()
-    {
-        // Calculate the direction to the player
-        Vector3 directionToPlayer = (player.position - transform.position).normalized;
-        Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
-
-        // Apply a 180-degree rotation offset if needed
-        targetRotation *= Quaternion.Euler(0, 180, 0);
-
-        // Smoothly rotate the cannon to face the player
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
-    }
-
-
-    private IEnumerator ShootAtPlayer()
-    {
-        while (true)
-        {
-            if (isShooting && player != null)
-            {
+    private IEnumerator ShootAtPlayer() {
+        while (true) {
+            if (isShooting && player != null) {
                 Vector3 direction = (player.position - transform.position).normalized;
-                GameObject projectile = Instantiate(projectilePrefab, transform.position + direction, Quaternion.identity);
+                GameObject projectile = Instantiate (projectilePrefab, transform.position + direction, Quaternion.identity);
                 Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
 
-                if (projectileRb != null)
-                {
+                if (projectileRb != null) {
                     projectileRb.velocity = direction * projectileSpeed;
                 }
 
+                //Destroy(projectile, 5f);
                 yield return new WaitForSeconds(shootingInterval);
-            }
-            else
-            {
+            } else {
                 yield return null;
             }
         }
     }
 
-    void OnDrawGizmosSelected()
-    {
+    void OnDrawGizmosSelected() {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, shootingRadius);
     }
