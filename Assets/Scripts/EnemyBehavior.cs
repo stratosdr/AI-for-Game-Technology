@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -34,6 +35,10 @@ public class EnemyBehavior : MonoBehaviour
     private bool isPlayerDetected = false; // Flag to check if player is detected
     private Animator animator;
 
+    private Transform model_transform;
+    public float smoothTime = 1000f;
+
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -43,7 +48,11 @@ public class EnemyBehavior : MonoBehaviour
         // Find the LevelManager in the scene
         levelManager = FindObjectOfType<LevelManager>();
         analyticsManager = FindObjectOfType<AnalyticsManager>();
-
+        model_transform = transform.Find("Ant_free_2_");
+        
+        if (model_transform == null) {
+            Debug.Log("Model_transform not found!");
+        }
         if (levelManager == null)
         {
             Debug.LogError("LevelManager not found in the scene!");
@@ -136,15 +145,19 @@ public class EnemyBehavior : MonoBehaviour
 
     void SetNewWanderDirection()
     {
-        float randomAngle = Random.Range(0f, 360f);
+        float randomAngle = UnityEngine.Random.Range(0f, 360f);
         wanderDirection = new Vector3(Mathf.Cos(randomAngle), 0f, Mathf.Sin(randomAngle)).normalized;
-        wanderTimer = Random.Range(2f, 5f);
+        wanderTimer = UnityEngine.Random.Range(2f, 5f);
     }
 
     void ApproachPlayer(Transform targetPlayer)
     {
         Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
         rb.MovePosition(rb.position + directionToPlayer * chaseSpeed * Time.deltaTime);
+        float targetAngle = Mathf.Atan2(directionToPlayer.x, directionToPlayer.z) * Mathf.Rad2Deg;
+        float smoothAngle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, smoothTime * Time.deltaTime);
+        Quaternion rotation = Quaternion.Euler(0, smoothAngle, 0);
+        model_transform.rotation = rotation;
     }
 
     // Step 1: Start charging (ducking) before jumping
