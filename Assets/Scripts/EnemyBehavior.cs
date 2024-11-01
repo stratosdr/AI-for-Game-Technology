@@ -6,13 +6,13 @@ public class EnemyBehavior : MonoBehaviour
     public float wanderSpeed = 2f;
     public float chaseSpeed = 4f;
     public float detectionRadius = 5f;
-    public float safeRadius = 3f;  
-    public float jumpForce = 10f;  
-    public float jumpHeight = 5f; 
-    public float duckingHeightMultiplier = 0.5f; 
-    public float chargingDuration = 1.0f;  
+    public float safeRadius = 3f;
+    public float jumpForce = 10f;
+    public float jumpHeight = 5f;
+    public float duckingHeightMultiplier = 0.5f;
+    public float chargingDuration = 1.0f;
     public float knockbackForce = 5f;
-    public float jumpCooldownDuration = 5.0f;  
+    public float jumpCooldownDuration = 5.0f;
 
     private Vector3 wanderDirection;
     private float wanderTimer;
@@ -21,22 +21,24 @@ public class EnemyBehavior : MonoBehaviour
     private Rigidbody rb;
 
     private bool isJumping = false;
-    private bool isCharging = false; 
-    private bool isOnCooldown = false;  
-    private Vector3 savedPlayerPosition;  
-    private Vector3 originalScale; 
+    private bool isCharging = false;
+    private bool isOnCooldown = false;
+    private Vector3 savedPlayerPosition;
+    private Vector3 originalScale;
 
     // Reference to LevelManager
     private LevelManager levelManager;
     private AnalyticsManager analyticsManager;
-    
+
     private float detectionTimer = 0f; // Timer for detecting player
     private bool isPlayerDetected = false; // Flag to check if player is detected
+    private Animator animator;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
 
         // Find the LevelManager in the scene
         levelManager = FindObjectOfType<LevelManager>();
@@ -51,6 +53,10 @@ public class EnemyBehavior : MonoBehaviour
             Debug.LogError("AnalyticsManager not found in the scene!");
         }
         originalScale = transform.localScale;
+        if (animator == null)
+        {
+            Debug.LogError("Animator not found in the scene!");
+        }
 
         SetNewWanderDirection();
     }
@@ -72,12 +78,14 @@ public class EnemyBehavior : MonoBehaviour
                     {
                         ApproachPlayer(closestPlayer);
                         StepDetectionTimer(); // Step detection timer when the player is approached
+                        animator.SetBool("isWalking", true);
                     }
                     else
                     {
                         savedPlayerPosition = closestPlayer.position;
                         StartCharging();
                         StopDetectionTimer(); // Stop detection timer when the player is charged
+                        animator.SetBool("isWalking", false);
                     }
                 }
                 else
@@ -146,7 +154,7 @@ public class EnemyBehavior : MonoBehaviour
 
         transform.localScale = new Vector3(originalScale.x, originalScale.y * duckingHeightMultiplier, originalScale.z);
 
-        Invoke(nameof(JumpAfterCharge), chargingDuration); 
+        Invoke(nameof(JumpAfterCharge), chargingDuration);
     }
 
     // Step 2: After charging, jump towards the saved location
@@ -159,7 +167,7 @@ public class EnemyBehavior : MonoBehaviour
 
     void StartJump(Vector3 targetPosition)
     {
-        isCharging = false;  
+        isCharging = false;
         isJumping = true;
 
         Vector3 directionToTarget = (targetPosition - transform.position).normalized;

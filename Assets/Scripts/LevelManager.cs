@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class LevelManager : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class LevelManager : MonoBehaviour
     public GameObject pauseButton;    // Reference to the Pause Button
     public GameObject mainMenuPanel;  // Reference to Main Menu Panel
     public GameObject gameplayUI;     // Reference to Gameplay UI (optional)
+    public CameraZoom cameraZoom;     // Reference to CameraZoom
+    public Animator playerAnimator;   // Reference to Player's Animator
 
     private CharacterMovement playerMovement;  // Reference to CharacterMovement
     private AnalyticsManager analyticsManager;
@@ -67,7 +70,7 @@ public class LevelManager : MonoBehaviour
     {
         if (youDiedPanel != null)
         {
-            youDiedPanel.SetActive(true);  // Display the You Died screen
+            StartCoroutine(ShowYouDiedPanelAfterDelay());
         }
 
         if (pauseButton != null)
@@ -76,7 +79,15 @@ public class LevelManager : MonoBehaviour
         }
 
         Time.timeScale = 0f;  // Pause the game
+        cameraZoom.StartZoom();  // Start the camera zoom effect
+        playerAnimator.SetTrigger("EndGameAnimation");  // Trigger the player's end game animation
         Debug.Log("Game Over: Player has died.");
+    }
+
+    private IEnumerator ShowYouDiedPanelAfterDelay()
+    {
+        yield return new WaitForSeconds(5f);  // Delay the panel display
+        youDiedPanel.SetActive(true);  // Display the You Died Panel
     }
 
     // Method to pause the game and hide the pause button

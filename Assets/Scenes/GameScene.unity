@@ -1654,6 +1654,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194231}
+  - component: {fileID: 963194232}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1749,6 +1750,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offset: {x: 0, y: 11, z: 0}
   smoothSpeed: 10
+--- !u!114 &963194232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03aa2f55864e2c048a45aa8619c4a7d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 8285882189106239928, guid: 5593013f9cab340489f544b3e09cc70b, type: 3}
+  zoomSpeed: 2
+  targetDistance: 2
+  targetFieldOfView: 30
 --- !u!1 &1023472137
 GameObject:
   m_ObjectHideFlags: 0
@@ -3468,6 +3485,8 @@ MonoBehaviour:
   pauseButton: {fileID: 1832737433}
   mainMenuPanel: {fileID: 1176973226}
   gameplayUI: {fileID: 1780308520}
+  cameraZoom: {fileID: 963194232}
+  playerAnimator: {fileID: 9030319819603436915, guid: 5593013f9cab340489f544b3e09cc70b, type: 3}
 --- !u!4 &1771482839
 Transform:
   m_ObjectHideFlags: 0
