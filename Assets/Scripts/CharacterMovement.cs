@@ -71,7 +71,7 @@ public class CharacterMovement : MonoBehaviour
         {
             isDead = true;
             analyticsManager.RecordDeath();
-            levelManager?.ShowYouDiedScreen();  // Call the LevelManager to show YouDiedPanel
+            levelManager.ShowYouDiedScreen();  // Call the LevelManager to show YouDiedPanel
             return;
         }
 

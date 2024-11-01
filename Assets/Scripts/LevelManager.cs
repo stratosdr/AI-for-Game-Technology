@@ -73,7 +73,10 @@ public class LevelManager : MonoBehaviour
         playerScript.playGameOverAudio();
         if (youDiedPanel != null)
         {
-            StartCoroutine(ShowYouDiedPanelAfterDelay());
+            youDiedPanel.SetActive(true);  // Display the You Died Panel
+            //StartCoroutine(ShowYouDiedPanelAfterDelay());
+        } else {
+            Debug.Log("YOU DIED PANEL IS MISSSING");
         }
 
         if (pauseButton != null)
