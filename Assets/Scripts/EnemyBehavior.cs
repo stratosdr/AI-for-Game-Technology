@@ -143,7 +143,14 @@ public class EnemyBehavior : MonoBehaviour
 
     void ApproachPlayer(Transform targetPlayer)
     {
+        // Calculate the direction to the player and move the enemy
         Vector3 directionToPlayer = (targetPlayer.position - transform.position).normalized;
+
+        // Rotate the enemy to face the player smoothly
+        Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+
+        // Move the enemy toward the player
         rb.MovePosition(rb.position + directionToPlayer * chaseSpeed * Time.deltaTime);
     }
 
