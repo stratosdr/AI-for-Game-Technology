@@ -85,8 +85,8 @@ public class LevelManager : MonoBehaviour
         }
 
         Time.timeScale = 0f;  // Pause the game
-        cameraZoom.StartZoom();  // Start the camera zoom effect
-        playerAnimator.SetTrigger("EndGameAnimation");  // Trigger the player's end game animation
+        //cameraZoom.StartZoom();  // Start the camera zoom effect
+        //playerAnimator.SetTrigger("EndGameAnimation");  // Trigger the player's end game animation
         Debug.Log("Game Over: Player has died.");
     }
 

@@ -117,6 +117,8 @@ public class CharacterMovement : MonoBehaviour
             {
                 speed = runSpeed;
                 animator.SetBool("isRunning", true);
+                analyticsManager.RecordWalking();
+                
                 stamina -= Time.deltaTime * 10; // Decrease stamina when running
                 if (Time.time >= nextStepTime) {
                     PlayWalkAudio();
@@ -127,6 +129,7 @@ public class CharacterMovement : MonoBehaviour
             {
                 speed = walkSpeed;
                 animator.SetBool("isRunning", false);
+                analyticsManager.RecordSprinting();
 
                 if (Time.time >= nextStepTime) {
                     PlayWalkAudio();
