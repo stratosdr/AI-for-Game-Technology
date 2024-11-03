@@ -1,0 +1,95 @@
+Fold 1:
+Root Mean Squared Error for avgCompetence: 1.04
+Percentage Accuracy for avgCompetence: 74.06%
+Root Mean Squared Error for avgFlow: 1.00
+Percentage Accuracy for avgFlow: 75.00%
+Root Mean Squared Error for avgTension: 1.47
+Percentage Accuracy for avgTension: 63.31%
+Root Mean Squared Error for avgChallenge: 1.41
+Percentage Accuracy for avgChallenge: 64.64%
+Root Mean Squared Error for avgNegativeAffect: 1.49
+Percentage Accuracy for avgNegativeAffect: 62.66%
+Root Mean Squared Error for avgPositiveAffect: 1.14
+Percentage Accuracy for avgPositiveAffect: 71.41%
+Overall Root Mean Squared Error: 1.26
+Overall Percentage Accuracy: 68.51%
+
+Fold 2:
+Root Mean Squared Error for avgCompetence: 0.96
+Percentage Accuracy for avgCompetence: 76.06%
+Root Mean Squared Error for avgFlow: 1.12
+Percentage Accuracy for avgFlow: 72.05%
+Root Mean Squared Error for avgTension: 0.76
+Percentage Accuracy for avgTension: 80.91%
+Root Mean Squared Error for avgChallenge: 0.87
+Percentage Accuracy for avgChallenge: 78.35%
+Root Mean Squared Error for avgNegativeAffect: 0.87
+Percentage Accuracy for avgNegativeAffect: 78.35%
+Root Mean Squared Error for avgPositiveAffect: 1.04
+Percentage Accuracy for avgPositiveAffect: 73.98%
+Overall Root Mean Squared Error: 0.94
+Overall Percentage Accuracy: 76.62%
+
+Fold 3:
+Root Mean Squared Error for avgCompetence: 0.65
+Percentage Accuracy for avgCompetence: 83.86%
+Root Mean Squared Error for avgFlow: 0.82
+Percentage Accuracy for avgFlow: 79.59%
+Root Mean Squared Error for avgTension: 1.08
+Percentage Accuracy for avgTension: 73.00%
+Root Mean Squared Error for avgChallenge: 0.87
+Percentage Accuracy for avgChallenge: 78.35%
+Root Mean Squared Error for avgNegativeAffect: 0.87
+Percentage Accuracy for avgNegativeAffect: 78.35%
+Root Mean Squared Error for avgPositiveAffect: 0.65
+Percentage Accuracy for avgPositiveAffect: 83.86%
+Overall Root Mean Squared Error: 0.82
+Overall Percentage Accuracy: 79.50%
+
+Fold 4:
+Root Mean Squared Error for avgCompetence: 0.76
+Percentage Accuracy for avgCompetence: 80.91%
+Root Mean Squared Error for avgFlow: 0.58
+Percentage Accuracy for avgFlow: 85.57%
+Root Mean Squared Error for avgTension: 0.96
+Percentage Accuracy for avgTension: 76.06%
+Root Mean Squared Error for avgChallenge: 0.50
+Percentage Accuracy for avgChallenge: 87.50%
+Root Mean Squared Error for avgNegativeAffect: 0.96
+Percentage Accuracy for avgNegativeAffect: 76.06%
+Root Mean Squared Error for avgPositiveAffect: 0.82
+Percentage Accuracy for avgPositiveAffect: 79.59%
+Overall Root Mean Squared Error: 0.76
+Overall Percentage Accuracy: 80.95%
+
+Fold 5:
+Root Mean Squared Error for avgCompetence: 0.82
+Percentage Accuracy for avgCompetence: 79.59%
+Root Mean Squared Error for avgFlow: 1.22
+Percentage Accuracy for avgFlow: 69.38%
+Root Mean Squared Error for avgTension: 1.19
+Percentage Accuracy for avgTension: 70.24%
+Root Mean Squared Error for avgChallenge: 1.32
+Percentage Accuracy for avgChallenge: 66.93%
+Root Mean Squared Error for avgNegativeAffect: 1.19
+Percentage Accuracy for avgNegativeAffect: 70.24%
+Root Mean Squared Error for avgPositiveAffect: 1.08
+Percentage Accuracy for avgPositiveAffect: 73.00%
+Overall Root Mean Squared Error: 1.14
+Overall Percentage Accuracy: 71.56%
+
+Across all folds:
+Root Mean Squared Error for avgCompetence: 0.84
+Percentage Accuracy for avgCompetence: 78.90%
+Root Mean Squared Error for avgFlow: 0.95
+Percentage Accuracy for avgFlow: 76.32%
+Root Mean Squared Error for avgTension: 1.09
+Percentage Accuracy for avgTension: 72.70%
+Root Mean Squared Error for avgChallenge: 0.99
+Percentage Accuracy for avgChallenge: 75.15%
+Root Mean Squared Error for avgNegativeAffect: 1.07
+Percentage Accuracy for avgNegativeAffect: 73.13%
+Root Mean Squared Error for avgPositiveAffect: 0.95
+Percentage Accuracy for avgPositiveAffect: 76.37%
+Overall Root Mean Squared Error: 0.98
+Overall Percentage Accuracy: 75.43%
