@@ -70,6 +70,7 @@ public class AnalyticsManager : MonoBehaviour
     private float lastTimeChangedSpeed;
     private bool isSprinting;
     private string analyticsFilePath;
+    private PlayerModel playerModel;
 
 
     void Awake()
@@ -89,6 +90,15 @@ public class AnalyticsManager : MonoBehaviour
         DontDestroyOnLoad(gameObject); // Keep this manager between scenes
     }
 
+    void Start()
+    {
+        playerModel = FindObjectOfType<PlayerModel>();
+        if (playerModel == null)
+        {
+            Debug.LogError("PlayerModel not found in the scene!");
+        }
+    }
+
     public void StartNewSession()
     {
         currentSessionData = new SessionData();
@@ -104,6 +114,10 @@ public class AnalyticsManager : MonoBehaviour
         if (isSprinting) RecordSprinting();
         else RecordWalking();
         playerAnalytics.sessions.Add(currentSessionData);
+
+        // Make prediction after the session ends
+        float[] currentPrediction = playerModel.MakePrediction(currentSessionData);
+
         if (newSession) StartNewSession(); // Prepare for a new session
     }
 
