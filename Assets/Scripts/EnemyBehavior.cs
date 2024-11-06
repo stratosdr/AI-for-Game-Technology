@@ -38,6 +38,21 @@ public class EnemyBehavior : MonoBehaviour
     private Transform model_transform;
     public float smoothTime = 1000f;
 
+    void Awake()
+    {
+        DifficultyManager difficultyManager = FindObjectOfType<DifficultyManager>();
+        if (difficultyManager == null)
+        {
+            Debug.LogError("DifficultyManager not found in the scene!");
+        }
+
+        // Initialize difficulty parameters
+        chargingDuration = difficultyManager.chargingDuration;
+        safeRadius = difficultyManager.safeRadius;
+        chaseSpeed = difficultyManager.chaseSpeed;
+        detectionRadius = difficultyManager.detectionRadius;
+        jumpCooldownDuration = difficultyManager.jumpCooldownDuration;
+    }
 
     void Start()
     {

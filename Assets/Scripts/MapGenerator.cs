@@ -364,6 +364,21 @@ public class CellularLevelGenerator : MonoBehaviour
 		generateBombs();
 	}
 
+    void Awake()
+    {
+        DifficultyManager difficultyManager = FindObjectOfType<DifficultyManager>();
+        if (difficultyManager == null)
+        {
+            Debug.LogError("DifficultyManager not found in the scene!");
+        }
+		// Initialize difficulty parameters
+		enemyAmount = difficultyManager.enemyAmount;
+		bombAmount = difficultyManager.bombAmount;
+		shootEnemyAmount = difficultyManager.shootEnemyAmount;
+		width = difficultyManager.width;
+		height = difficultyManager.height;
+		hilbertReps = difficultyManager.hilbertReps;
+	}
 
     void Start()
     {

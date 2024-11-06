@@ -22,6 +22,20 @@ public class BombBehaviour : MonoBehaviour
     public AudioClip fuzeAudio;
 
 
+    void Awake()
+    {
+        DifficultyManager difficultyManager = FindObjectOfType<DifficultyManager>();
+        if (difficultyManager == null)
+        {
+            Debug.LogError("DifficultyManager not found in the scene!");
+        }
+
+        // Initialize difficulty parameters
+        detonationSpeed = difficultyManager.detonationSpeed;
+        radius = difficultyManager.radius;
+        knockbackConcusionTime = difficultyManager.knockbackConcusionTime;
+    }
+
     void Start()
     {
         

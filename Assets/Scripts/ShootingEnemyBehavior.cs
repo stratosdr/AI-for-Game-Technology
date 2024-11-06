@@ -20,6 +20,20 @@ public class ShootingEnemyBehavior : MonoBehaviour
 
     public float smoothTime = 1000f;
 
+    void Awake()
+    {
+        DifficultyManager difficultyManager = FindObjectOfType<DifficultyManager>();
+        if (difficultyManager == null)
+        {
+            Debug.LogError("DifficultyManager not found in the scene!");
+        }
+
+        // Initialize difficulty parameters
+        projectileSpeed = difficultyManager.projectileSpeed;
+        shootingRadius = difficultyManager.shootingRadius;
+        shootingInterval = difficultyManager.shootingInterval;
+    }
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
