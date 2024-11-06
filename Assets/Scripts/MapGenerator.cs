@@ -24,7 +24,7 @@ public class CellularLevelGenerator : MonoBehaviour
 
 	public int enemyAmount = 20;
 	public int bombAmount = 30;
-	public int shootEnemyAmount = 5;
+	public int shootEnemyAmount = 15;
 
 	public GameObject floorPrefab;
 	public GameObject arrowPrefab;

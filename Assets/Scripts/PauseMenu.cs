@@ -31,7 +31,7 @@ public class PauseMenu : MonoBehaviour
     public void Quit()
     {
         analyticsManager.EndSession(false, false);
-        analyticsManager.SaveAnalytics(); // Save analytics on quit
+        analyticsManager.SaveAnalytics(false); // Save analytics on quit
         Application.Quit();
     }
 

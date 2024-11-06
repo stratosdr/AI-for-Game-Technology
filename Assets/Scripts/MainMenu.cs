@@ -27,7 +27,7 @@ public class MainMenu : MonoBehaviour
         // Check for 'T' key press to save analytics and reset player session
         if (Input.GetKeyDown(KeyCode.T))
         {
-            analyticsManager.SaveAnalytics(); // Save analytics
+            analyticsManager.SaveAnalytics(true); // Save analytics
             Debug.Log("Analytics saved and new session started.");
         }
     }

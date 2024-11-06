@@ -71,6 +71,7 @@ public class AnalyticsManager : MonoBehaviour
     private bool isSprinting;
     private string analyticsFilePath;
     private PlayerModel playerModel;
+    private DifficultyManager difficultyManager;
 
 
     void Awake()
@@ -97,6 +98,12 @@ public class AnalyticsManager : MonoBehaviour
         {
             Debug.LogError("PlayerModel not found in the scene!");
         }
+
+        difficultyManager = FindObjectOfType<DifficultyManager>();
+        if (difficultyManager == null)
+        {
+            Debug.LogError("DifficultyManager not found in the scene!");
+        }
     }
 
     public void StartNewSession()
@@ -117,6 +124,8 @@ public class AnalyticsManager : MonoBehaviour
 
         // Make prediction after the session ends
         float[] currentPrediction = playerModel.MakePrediction(currentSessionData);
+        // Update difficulty
+        difficultyManager.UpdateDifficulty(currentPrediction);
 
         if (newSession) StartNewSession(); // Prepare for a new session
     }
@@ -190,14 +199,19 @@ public class AnalyticsManager : MonoBehaviour
         currentSessionData.collisions++;
     }
 
-    public void SaveAnalytics()
+    public void SaveAnalytics(bool newAnalytics)
     {
         playerAnalytics.SaveToJson(analyticsFilePath);
         Debug.Log("Analytics saved to " + analyticsFilePath);
         
-        playerAnalytics = new PlayerAnalytics();
-        // Update the file path for the new player ID
-        analyticsFilePath = Path.Combine(Application.dataPath, $"analytics_{playerAnalytics.playerId}.json");
-        StartNewSession(); // Start a new session
+        if (newAnalytics)
+        {
+            playerAnalytics = new PlayerAnalytics();
+            // Update the file path for the new player ID
+            analyticsFilePath = Path.Combine(Application.dataPath, $"analytics_{playerAnalytics.playerId}.json");
+            StartNewSession(); // Start a new session
+
+            difficultyManager.ResetDifficulty(); // Reset difficulty
+        }
     }
 }

@@ -107,6 +107,10 @@ public class PlayerModel : MonoBehaviour
 
     void OnDestroy()
     {
-        worker.Dispose();
+        if (worker != null)
+        {
+            worker.Dispose();
+            worker = null;
+        }
     }
 }

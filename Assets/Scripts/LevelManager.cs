@@ -189,7 +189,7 @@ public class LevelManager : MonoBehaviour
     {
         Debug.Log("Quitting the game...");
         analyticsManager.EndSession(false, false);
-        analyticsManager.SaveAnalytics(); // Save analytics on quit
+        analyticsManager.SaveAnalytics(false); // Save analytics on quit
         Application.Quit();  // Quit the game (doesn't work in editor)
     }
 }
